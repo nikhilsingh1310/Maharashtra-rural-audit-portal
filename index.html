@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Verified Performance Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS (Excel Parser) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css?v=1.2.4">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page-container" class="landing-page-container">
+        <div class="landing-content">
+            <div class="landing-header">
+                <img src="maharashtra_logo.png?v=1.2.4" alt="Emblem of Maharashtra" class="landing-logo">
+                <h1>Maharashtra Grampanchayat Performance Portal</h1>
+                <p class="landing-subtitle">Government of Maharashtra • Planning and Performance Audit System</p>
+            </div>
+            
+            <div class="landing-grid">
+                <!-- Card 1: Block Rankings -->
+                <div class="landing-card" id="card-rankings">
+                    <div class="card-icon-wrapper rankings-icon">
+                        <i data-lucide="trophy"></i>
+                    </div>
+                    <h2>Block Verification Rankings</h2>
+                    <p>Analyze verified performance metrics, configure eligibility parameters, adjust award thresholds, and evaluate district-level aggregations.</p>
+                    <button class="landing-card-btn btn-indigo">
+                        <span>Open Dashboard</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+                
+                <!-- Card 2: GP & BDO Search -->
+                <div class="landing-card" id="card-search">
+                    <div class="card-icon-wrapper search-icon">
+                        <i data-lucide="search"></i>
+                    </div>
+                    <h2>GP & BDO Search Portal</h2>
+                    <p>Compare verified BDO datasets side-by-side with Grampanchayat self-reported audits by selecting or querying LGD/BDO codes.</p>
+                    <button class="landing-card-btn btn-success">
+                        <span>Open Search Portal</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="landing-footer">
+                <p>System Version 1.1.4 (Scaleable Engine) • Clean Indigo/Amber Architecture</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Application Wrapper -->
+    <div class="app-container hidden" id="app-container">
+        <!-- Sidebar controls -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="maharashtra_logo.png?v=1.2.4" alt="Emblem of Maharashtra" class="logo-img">
+                    <span>Block Verified</span>
+                </div>
+                <p class="subtitle">Performance Ranking Engine</p>
+            </div>
+
+            <!-- Tab Navigation Menu -->
+            <nav class="portal-nav">
+                <button class="portal-nav-btn home-nav-btn" data-tab="home" style="margin-bottom: 8px;">
+                    <i data-lucide="home"></i>
+                    <span>Portal Home</span>
+                </button>
+                <div style="border-bottom: 1px solid var(--card-border); margin: 8px 0; width: 100%;"></div>
+                <button class="portal-nav-btn active" data-tab="rankings">
+                    <i data-lucide="trophy"></i>
+                    <span>Block Rankings</span>
+                </button>
+                <button class="portal-nav-btn" data-tab="search">
+                    <i data-lucide="search"></i>
+                    <span>GP & BDO Search</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-content">
+                <!-- Tab 1: Rankings Sidebar Controls -->
+                <div id="rankings-sidebar-controls" class="tab-sidebar-container">
+                    <!-- Data Source Card -->
+                    <div class="control-card">
+                        <h3 class="card-title"><i data-lucide="database"></i> Data Source</h3>
+                        <div id="drop-zone" class="drop-zone">
+                            <i data-lucide="upload-cloud" class="upload-icon"></i>
+                            <p class="drop-text">Drag & drop excel or <span>browse</span></p>
+                            <input type="file" id="file-input" accept=".xlsx, .xls" class="hidden-input">
+                        </div>
+                        <div class="current-file-badge">
+                            <i data-lucide="file-spreadsheet"></i>
+                            <span id="current-file-name" title="29.05.2026.xlsx">29.05.2026.xlsx</span>
+                        </div>
+                    </div>
+
+                    <!-- Parameters Card -->
+                    <div class="control-card">
+                        <h3 class="card-title"><i data-lucide="sliders"></i> Eligibility & Awards</h3>
+                        
+                        <div class="parameter-group">
+                            <div class="parameter-label">
+                                <span>Score Threshold</span>
+                                <span id="threshold-val" class="param-value">60%</span>
+                            </div>
+                            <input type="range" id="threshold-slider" min="50" max="95" value="60" step="1" class="slider">
+                            <p class="param-hint">Exclude blocks scoring below this value</p>
+                        </div>
+
+                        <div class="parameter-group">
+                            <div class="parameter-label">
+                                <span>Max Awards / District</span>
+                                <span id="max-awards-val" class="param-value">5</span>
+                            </div>
+                            <input type="range" id="max-awards-slider" min="1" max="15" value="5" step="1" class="slider">
+                            <p class="param-hint">Limit selection to top N blocks per district</p>
+                        </div>
+
+                        <div class="parameter-group">
+                            <div class="parameter-label">
+                                <span>Aggregation Strategy</span>
+                            </div>
+                            <select id="agg-method" class="select-input">
+                                <option value="mean" selected>Average GP Percentage</option>
+                                <option value="sum_ratio">Overall Weighted Percentage (Sum of Marks)</option>
+                                <option value="max">Maximum Grampanchayat Score</option>
+                                <option value="min">Minimum Grampanchayat Score</option>
+                            </select>
+                            <p class="param-hint">Method used to calculate block-level score</p>
+                        </div>
+                    </div>
+
+                    <!-- Filters Card -->
+                    <div class="control-card">
+                        <h3 class="card-title"><i data-lucide="filter"></i> Filters & Search</h3>
+                        
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="district-select">Select District</label>
+                            <select id="district-select" class="select-input">
+                                <option value="all">All Districts</option>
+                            </select>
+                        </div>
+
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="block-select">Select Block</label>
+                            <select id="block-select" class="select-input" disabled>
+                                <option value="all">All Blocks</option>
+                            </select>
+                        </div>
+
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-input">Search Block/GP</label>
+                            <div class="search-container">
+                                <i data-lucide="search" class="search-icon"></i>
+                                <input type="text" id="search-input" placeholder="Search by name..." class="search-input-field">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Search Sidebar Controls -->
+                <div id="search-sidebar-controls" class="tab-sidebar-container hidden">
+                    <!-- Search Data Source Card -->
+                    <div class="control-card">
+                        <h3 class="card-title"><i data-lucide="database"></i> Search Data Source</h3>
+                        <div id="search-drop-zone" class="drop-zone">
+                            <i data-lucide="upload-cloud" class="upload-icon"></i>
+                            <p class="drop-text">Drag & drop excel or <span>browse</span></p>
+                            <input type="file" id="search-file-input" accept=".xlsx, .xls" class="hidden-input">
+                        </div>
+                        <div class="current-file-badge">
+                            <i data-lucide="file-spreadsheet"></i>
+                            <span id="search-current-file-name" title="Report GP and BDO 09.06.2025.xlsx">Report GP and BDO 09.06.2025.xlsx</span>
+                        </div>
+                    </div>
+
+                    <!-- Search Dataset Info Card -->
+                    <div class="control-card">
+                        <h3 class="card-title"><i data-lucide="info"></i> Dataset Info</h3>
+                        <div class="metadata-info-list" style="display: flex; flex-direction: column; gap: 10px; font-size: 12px; color: var(--text-secondary);">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>BDO Verified Rows:</span>
+                                <span id="meta-bdo-rows" style="font-weight: 700; color: var(--primary);">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>GP Self-Reported Rows:</span>
+                                <span id="meta-gp-rows" style="font-weight: 700; color: var(--primary);">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Unique BDO Codes:</span>
+                                <span id="meta-unique-bdo" style="font-weight: 700; color: var(--primary);">-</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Unique GP LGD Codes:</span>
+                                <span id="meta-unique-gp" style="font-weight: 700; color: var(--primary);">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>Version 1.0.0 (Scaleable Engine)</p>
+                <div class="current-time">
+                    <i data-lucide="clock"></i>
+                    <span id="system-time">2026-06-09</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Area -->
+        <main class="main-content">
+            <!-- CORS Warning Banner -->
+            <div id="cors-warning-banner" class="cors-warning-banner hidden">
+                <div class="banner-content">
+                    <i data-lucide="alert-triangle" class="banner-icon"></i>
+                    <span>
+                        <strong>Local File Security Policy (CORS) Active:</strong> Modern browsers restrict loading data automatically over <code>file://</code>. Please view the dashboard via the running local server at <strong><a href="http://localhost:8000" target="_blank">http://localhost:8000</a></strong>, or simply <strong>drag & drop / upload</strong> the spreadsheet file using the <strong>Data Source</strong> uploader on the left!
+                    </span>
+                </div>
+            </div>
+
+            <!-- Tab 1: Rankings Dashboard Main Content -->
+            <div id="rankings-main-wrapper" class="tab-main-container">
+                <!-- Header -->
+                <header class="main-header">
+                    <div class="header-text">
+                        <h1>Performance Ranking Dashboard</h1>
+                        <p class="lead-text">Shortlist, rank, and view eligible blocks across districts dynamically.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="export-csv" class="btn btn-secondary">
+                            <i data-lucide="download"></i> Export CSV
+                        </button>
+                        <button id="reset-params" class="btn btn-icon-only" title="Reset Filters">
+                            <i data-lucide="refresh-cw"></i>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Loading Overlay -->
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Parsing Excel and generating rankings...</p>
+                </div>
+
+                <!-- Dashboard Contents -->
+                <div class="dashboard-body">
+                    <!-- KPI cards -->
+                    <section class="kpi-grid">
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-primary-glow">
+                                <i data-lucide="map-pin"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Districts Processed</span>
+                                <span id="kpi-districts" class="kpi-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-success-glow">
+                                <i data-lucide="check-circle-2"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Total Eligible Blocks</span>
+                                <span id="kpi-eligible" class="kpi-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-warning-glow">
+                                <i data-lucide="award"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Awarded Blocks</span>
+                                <span id="kpi-awarded" class="kpi-value">-</span>
+                            </div>
+                        </div>
+
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-info-glow">
+                                <i data-lucide="trending-up"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Avg Awarded Score</span>
+                                <span id="kpi-avg-score" class="kpi-value">-</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Visualization Row -->
+                    <section class="visualization-row">
+                        <!-- Chart 1 -->
+                        <div class="chart-card glass">
+                            <div class="chart-header">
+                                <h3><i data-lucide="bar-chart-3"></i> Awarded Blocks per District</h3>
+                                <p class="chart-subtitle">Top districts by number of shortlisted blocks</p>
+                            </div>
+                            <div class="chart-body ticker-container">
+                                <div class="ticker-wrap">
+                                    <div class="ticker" id="district-ticker"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2 -->
+                        <div class="chart-card glass">
+                            <div class="chart-header">
+                                <h3><i data-lucide="trophy"></i> Top 10 Performing Blocks</h3>
+                                <p class="chart-subtitle">Highest aggregated scores across all districts</p>
+                            </div>
+                            <div class="chart-body">
+                                <div id="top-blocks-chart"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- District Leaders (Top 2 Performers) Section -->
+                    <section class="table-section glass" style="margin-bottom: 28px; padding: 24px;">
+                        <div class="table-header" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+                            <div class="table-header-left">
+                                <h2 style="font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px; margin: 0;">
+                                    <i data-lucide="award" style="color: var(--warning); width: 22px; height: 22px;"></i>
+                                    District Leaders (Top 2 Performers)
+                                </h2>
+                                <p class="table-subtitle" id="district-leaders-subtitle" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Top 2 performing blocks in each of the 34 districts</p>
+                            </div>
+                            <div class="table-header-right" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <div id="district-leaders-strategy-badge" style="font-size: 11px; font-weight: 600; background: rgba(0, 42, 84, 0.05); color: var(--primary); padding: 7px 12px; border-radius: var(--border-radius-md); border: 1px solid rgba(0, 42, 84, 0.1); white-space: nowrap;">
+                                    Average GP Percentage
+                                </div>
+                                <div class="search-box-wrapper" style="position: relative;">
+                                    <i data-lucide="search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--text-muted);"></i>
+                                    <input type="text" id="district-leaders-search" placeholder="Search district..." style="padding: 8px 12px 8px 36px; border: 1px solid var(--card-border); border-radius: var(--border-radius-md); font-size: 13px; background: rgba(255, 255, 255, 0.7); outline: none; width: 220px; transition: var(--transition-smooth);">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="district-leaders-grid" id="district-leaders-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; max-height: 520px; overflow-y: auto; padding-right: 8px;">
+                            <!-- Populated dynamically in app.js -->
+                        </div>
+                    </section>
+
+                    <!-- Main Data Section -->
+                    <section class="table-section glass">
+                        <div class="table-header">
+                            <div class="table-header-left">
+                                <h2>Detailed Block Shortlist & Rankings</h2>
+                                <p class="table-subtitle">Showing aggregated performance details and district rankings</p>
+                            </div>
+                            <div class="table-header-right">
+                                <div class="table-summary-text">
+                                    Showing <span id="table-showing-count">0</span> blocks
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table id="rankings-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 60px;">Rank</th>
+                                        <th class="sortable" data-sort="district">District <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                                        <th class="sortable" data-sort="block">Block Name <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                                        <th class="sortable text-center" data-sort="score">Score (%) <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                                        <th class="sortable text-center" data-sort="gps">Grampanchayats <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                                        <th class="text-center">Status</th>
+                                        <th style="width: 50px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5">
+                                            <div class="table-loading">
+                                                <div class="spinner small"></div>
+                                                <p>Loading table data...</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </div> <!-- end of rankings-main-wrapper -->
+
+            <!-- Tab 2: GP & BDO Code Search Dashboard Main Content -->
+            <div id="search-main-wrapper" class="tab-main-container hidden">
+                <!-- Header -->
+                <header class="main-header">
+                    <div class="header-text">
+                        <h1>GP & BDO Code Search Portal</h1>
+                        <p class="lead-text">Query BDO-verified and GP self-reported datasets by BDOCode or GPLGDCode.</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="search-export-csv" class="btn btn-secondary" disabled>
+                            <i data-lucide="download"></i> Export Results
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Search Controls Panel -->
+                <section class="search-panel-section glass" style="padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px;">
+                    <h3 style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+                        <i data-lucide="search" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                        Search Database
+                    </h3>
+                    <div class="search-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 16px; align-items: flex-end;">
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-type-select">Search Type</label>
+                            <select id="search-type-select" class="select-input">
+                                <option value="BDOCode">BDO Code (Block level)</option>
+                                <option value="GPLGDCode" selected>GP LGD Code (GP level)</option>
+                                <option value="Combine">Combine BDO & GP (Comparative)</option>
+                            </select>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-code-select">Select Code</label>
+                            <select id="search-code-select" class="select-input">
+                                <option value="all">All Codes</option>
+                            </select>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-text-input">Manual Code Search</label>
+                            <div class="search-container">
+                                <i data-lucide="search" class="search-icon"></i>
+                                <input type="text" id="search-text-input" placeholder="Type partial or exact code..." class="search-input-field">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 10px;">
+                            <button id="search-submit-btn" class="btn" style="background: var(--primary); color: white;">
+                                <i data-lucide="search"></i> Search
+                            </button>
+                            <button id="search-reset-btn" class="btn btn-secondary" title="Reset Search">
+                                <i data-lucide="refresh-cw"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Search Loading Overlay -->
+                <div id="search-loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Searching database records...</p>
+                </div>
+
+                <!-- Search Dashboard Contents -->
+                <div class="search-dashboard-body hidden" id="search-dashboard-body">
+                    <!-- KPI Cards for Search Tab -->
+                    <section class="kpi-grid" style="margin-bottom: 24px;">
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-primary-glow">
+                                <i data-lucide="list"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Total Matching Records</span>
+                                <span id="search-kpi-total" class="kpi-value">0</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass" id="search-kpi-bdo-card">
+                            <div class="kpi-icon-container bg-success-glow">
+                                <i data-lucide="database"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">BDO Sheet Matches</span>
+                                <span id="search-kpi-bdo" class="kpi-value">0</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass" id="search-kpi-gp-card">
+                            <div class="kpi-icon-container bg-warning-glow">
+                                <i data-lucide="file-text"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">GP Sheet Matches</span>
+                                <span id="search-kpi-gp" class="kpi-value">0</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card glass">
+                            <div class="kpi-icon-container bg-info-glow">
+                                <i data-lucide="globe"></i>
+                            </div>
+                            <div class="kpi-data">
+                                <span class="kpi-label">Query Search Type</span>
+                                <span id="search-kpi-type" class="kpi-value" style="font-size: 14px;">-</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Details Comparison Grid (shown when 1 record is selected/matched) -->
+                    <section id="search-details-section" class="hidden" style="margin-bottom: 28px;">
+                        <div class="comparison-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 24px;">
+                            <!-- BDO Verified Details Card -->
+                            <div class="details-card glass" id="detail-bdo-card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                                <div class="card-header" style="border-bottom: 1px solid var(--card-border); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                    <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                        <span class="badge badge-gold" style="font-size: 12px; padding: 4px 10px;">BDO Tab</span>
+                                        BDO Verified Score
+                                    </h3>
+                                    <span id="detail-bdo-percentage" style="font-size: 24px; font-weight: 800; color: var(--warning);">-</span>
+                                </div>
+                                <div class="details-content-grid" id="detail-bdo-fields" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                                <div class="indicators-section" style="margin-top: 10px;">
+                                    <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary);">Framework-wise Verified Scores</h4>
+                                    <div id="detail-bdo-indicators" style="display: flex; flex-direction: column; gap: 10px;">
+                                        <!-- Indicators F1-F8 populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GP Self-Reported Details Card -->
+                            <div class="details-card glass" id="detail-gp-card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                                <div class="card-header" style="border-bottom: 1px solid var(--card-border); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                    <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                        <span class="badge badge-success" style="font-size: 12px; padding: 4px 10px;">GP Tab</span>
+                                        GP Self-Reported Score
+                                    </h3>
+                                    <span id="detail-gp-percentage" style="font-size: 24px; font-weight: 800; color: var(--success);">-</span>
+                                </div>
+                                <div class="details-content-grid" id="detail-gp-fields" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 13px;">
+                                    <!-- Populated dynamically -->
+                                </div>
+                                <div class="indicators-section" style="margin-top: 10px;">
+                                    <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 12px; color: var(--text-secondary);">Framework-wise Self-Reported Scores</h4>
+                                    <div id="detail-gp-indicators" style="display: flex; flex-direction: column; gap: 10px;">
+                                        <!-- Indicators F1-F8 populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Multiple Records Tables Section -->
+                    <section id="search-tables-section" class="hidden" style="display: flex; flex-direction: column; gap: 28px;">
+                        <!-- BDO Table -->
+                        <div class="table-section glass" id="search-bdo-table-wrapper" style="padding: 20px;">
+                            <div class="table-header" style="margin-bottom: 14px;">
+                                <div>
+                                    <h3 style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                        <span class="badge badge-gold">BDO Tab</span>
+                                        BDO Verified Records
+                                    </h3>
+                                    <p class="table-subtitle" style="font-size: 11px; margin-top: 2px;">Records matched from BDO worksheet</p>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="table-summary-text" style="font-size: 11px; padding: 4px 10px;">
+                                        Showing <span id="bdo-table-count">0</span> rows
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table id="search-bdo-table">
+                                    <thead>
+                                        <tr id="search-bdo-table-header">
+                                            <!-- Dynamically populated -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="search-bdo-table-body">
+                                        <!-- Dynamically populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Pagination BDO -->
+                            <div class="pagination-controls" id="bdo-pagination">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+
+                        <!-- GP Table -->
+                        <div class="table-section glass" id="search-gp-table-wrapper" style="padding: 20px;">
+                            <div class="table-header" style="margin-bottom: 14px;">
+                                <div>
+                                    <h3 style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                                        <span class="badge badge-success">GP Tab</span>
+                                        GP Self-Reported Records
+                                    </h3>
+                                    <p class="table-subtitle" style="font-size: 11px; margin-top: 2px;">Records matched from GP worksheet</p>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="table-summary-text" style="font-size: 11px; padding: 4px 10px;">
+                                        Showing <span id="gp-table-count">0</span> rows
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table id="search-gp-table">
+                                    <thead>
+                                        <tr id="search-gp-table-header">
+                                            <!-- Dynamically populated -->
+                                        </tr>
+                                    </thead>
+                                    <tbody id="search-gp-table-body">
+                                        <!-- Dynamically populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Pagination GP -->
+                            <div class="pagination-controls" id="gp-pagination">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- No Data Section -->
+                <section id="search-no-data" class="glass hidden" style="padding: 40px; text-align: center; color: var(--text-muted);">
+                    <i data-lucide="info" style="width: 40px; height: 40px; margin-bottom: 12px; color: var(--text-muted); display: inline-block;"></i>
+                    <h3 style="font-size: 18px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px;">No Records Found</h3>
+                    <p style="font-size: 13px;">Please search using a valid BDOCode or GPLGDCode, or verify the filters above.</p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js?v=1.2.4"></script>
+    <script src="search.js?v=1.2.4"></script>
+</body>
+</html>
