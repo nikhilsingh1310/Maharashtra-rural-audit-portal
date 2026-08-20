@@ -1095,3 +1095,12 @@ function renderDistrictLeaders() {
     // Refresh Lucide icons inside the grid
     lucide.createIcons();
 }
+
+// Re-render components when language is toggled
+window.addEventListener('portalLanguageChanged', () => {
+    if (filteredBlocks && filteredBlocks.length > 0) {
+        renderTable();
+        renderDistrictLeaders();
+    }
+});
+

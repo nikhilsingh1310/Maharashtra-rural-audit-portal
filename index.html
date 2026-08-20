@@ -14,6 +14,8 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Translation Engine -->
+    <script src="i18n.js?v=1.0.0"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css?v=1.2.4">
 </head>
@@ -23,14 +25,20 @@
         <div class="official-portal-header-left">
             <div class="seal-container">
                 <img src="maharashtra_logo.png?v=1.2.4" alt="महाराष्ट्र शासन" class="gov-seal-img">
-                <span class="seal-caption">महाराष्ट्र शासन</span>
+                <span class="seal-caption" data-i18n="gov_seal_caption">महाराष्ट्र शासन</span>
             </div>
             <div class="gov-title-block">
-                <h1 class="gov-title-mr">मुख्यमंत्री समृद्ध पंचायत राज अभियान</h1>
-                <p class="gov-subtitle-mr">ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र</p>
+                <h1 class="gov-title-mr" data-i18n="gov_title">मुख्यमंत्री समृद्ध पंचायत राज अभियान</h1>
+                <p class="gov-subtitle-mr" data-i18n="gov_subtitle">ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र</p>
             </div>
         </div>
         <div class="official-portal-header-right">
+            <!-- Bilingual Language Switcher -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="mr" id="lang-mr-btn">मराठी</button>
+                <span class="lang-divider">|</span>
+                <button class="lang-btn" data-lang="en" id="lang-en-btn">English</button>
+            </div>
             <div class="gov-emblems-group">
                 <img src="cmspra_logo.png" alt="CMSPRA Campaign Logo" class="header-emblem-cmspra">
                 <img src="india_emblem.png" alt="State Emblem of India" class="header-emblem-india">
@@ -43,9 +51,9 @@
     <div id="landing-page-container" class="landing-page-container">
         <div class="landing-content">
             <div class="landing-intro">
-                <span class="landing-eyebrow">Performance Evaluation & Audit System</span>
-                <h2>Maharashtra Grampanchayat Verification Portal</h2>
-                <p class="landing-subtitle">Chief Minister Samruddha Panchayat Raj Abhiyan • Performance Rankings & Verification Audit Platform</p>
+                <span class="landing-eyebrow" data-i18n="landing_eyebrow">कामगिरी मूल्यमापन आणि लेखापरीक्षण प्रणाली</span>
+                <h2 data-i18n="landing_title">महाराष्ट्र ग्रामपंचायत पडताळणी पोर्टल</h2>
+                <p class="landing-subtitle" data-i18n="landing_subtitle">मुख्यमंत्री समृद्ध पंचायत राज अभियान • कामगिरी रँकिंग आणि पडताळणी ऑडिट व्यासपीठ</p>
             </div>
             
             <div class="landing-grid">
@@ -54,10 +62,10 @@
                     <div class="card-icon-wrapper rankings-icon">
                         <i data-lucide="trophy"></i>
                     </div>
-                    <h2>Block Verification Rankings</h2>
-                    <p>Analyze verified performance metrics, configure eligibility parameters, adjust award thresholds, and evaluate district-level aggregations.</p>
+                    <h2 data-i18n="card_rankings_title">गट पडताळणी रँकिंग</h2>
+                    <p data-i18n="card_rankings_desc">पडताळणी केलेल्या कामगिरी मेट्रिक्सचे विश्लेषण करा, पात्रता निकष निश्चित करा, पुरस्कार मर्यादा समायोजित करा आणि जिल्हास्तरीय एकत्रीकरणाचे मूल्यांकन करा.</p>
                     <button class="landing-card-btn btn-indigo">
-                        <span>Open Dashboard</span>
+                        <span data-i18n="card_rankings_btn">डॅशबोर्ड उघडा</span>
                         <i data-lucide="arrow-right"></i>
                     </button>
                 </div>
@@ -67,17 +75,17 @@
                     <div class="card-icon-wrapper search-icon">
                         <i data-lucide="search"></i>
                     </div>
-                    <h2>GP & BDO Search Portal</h2>
-                    <p>Compare verified BDO datasets side-by-side with Grampanchayat self-reported audits by selecting or querying LGD/BDO codes.</p>
+                    <h2 data-i18n="card_search_title">जीपी आणि बीडीओ शोध पोर्टल</h2>
+                    <p data-i18n="card_search_desc">एलजीडी/बीडीओ कोड निवडून किंवा शोधून ग्रामपंचायतींच्या स्वयं-नोंदणीकृत ऑडिटसह बीडीओ पडताळणी डेटासेटची तुलना करा.</p>
                     <button class="landing-card-btn btn-success">
-                        <span>Open Search Portal</span>
+                        <span data-i18n="card_search_btn">शोध पोर्टल उघडा</span>
                         <i data-lucide="arrow-right"></i>
                     </button>
                 </div>
             </div>
             
             <div class="landing-footer">
-                <p>© मुख्यमंत्री समृद्ध पंचायत राज अभियान, ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र शासन</p>
+                <p data-i18n="landing_footer">© मुख्यमंत्री समृद्ध पंचायत राज अभियान, ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र शासन</p>
             </div>
         </div>
     </div>
@@ -89,25 +97,25 @@
             <div class="sidebar-header">
                 <div class="sidebar-brand-badge">
                     <i data-lucide="shield-check" style="color: var(--primary); width: 22px; height: 22px;"></i>
-                    <span>Evaluation & Audit</span>
+                    <span data-i18n="sidebar_brand">मूल्यमापन व ऑडिट</span>
                 </div>
-                <p class="subtitle">Performance Ranking Engine</p>
+                <p class="subtitle" data-i18n="sidebar_subtitle">कामगिरी रँकिंग इंजिन</p>
             </div>
 
             <!-- Tab Navigation Menu -->
             <nav class="portal-nav">
                 <button class="portal-nav-btn home-nav-btn" data-tab="home" style="margin-bottom: 8px;">
                     <i data-lucide="home"></i>
-                    <span>Portal Home</span>
+                    <span data-i18n="nav_home">पोर्टल मुख्यपृष्ठ</span>
                 </button>
                 <div style="border-bottom: 1px solid var(--card-border); margin: 8px 0; width: 100%;"></div>
                 <button class="portal-nav-btn active" data-tab="rankings">
                     <i data-lucide="trophy"></i>
-                    <span>Block Rankings</span>
+                    <span data-i18n="nav_rankings">गट रँकिंग</span>
                 </button>
                 <button class="portal-nav-btn" data-tab="search">
                     <i data-lucide="search"></i>
-                    <span>GP & BDO Search</span>
+                    <span data-i18n="nav_search">जीपी व बीडीओ शोध</span>
                 </button>
             </nav>
 
@@ -116,10 +124,10 @@
                 <div id="rankings-sidebar-controls" class="tab-sidebar-container">
                     <!-- Data Source Card -->
                     <div class="control-card">
-                        <h3 class="card-title"><i data-lucide="database"></i> Data Source</h3>
+                        <h3 class="card-title"><i data-lucide="database"></i> <span data-i18n="ctrl_data_source">डेटा स्रोत</span></h3>
                         <div id="drop-zone" class="drop-zone">
                             <i data-lucide="upload-cloud" class="upload-icon"></i>
-                            <p class="drop-text">Drag & drop excel or <span>browse</span></p>
+                            <p class="drop-text" data-i18n="ctrl_drag_drop">एक्सेल फाइल ड्रॅग करा किंवा निवडा</p>
                             <input type="file" id="file-input" accept=".xlsx, .xls" class="hidden-input">
                         </div>
                         <div class="current-file-badge">
@@ -130,63 +138,63 @@
 
                     <!-- Parameters Card -->
                     <div class="control-card">
-                        <h3 class="card-title"><i data-lucide="sliders"></i> Eligibility & Awards</h3>
+                        <h3 class="card-title"><i data-lucide="sliders"></i> <span data-i18n="ctrl_eligibility">पात्रता आणि पुरस्कार</span></h3>
                         
                         <div class="parameter-group">
                             <div class="parameter-label">
-                                <span>Score Threshold</span>
+                                <span data-i18n="ctrl_score_threshold">गुण मर्यादा (कट-ऑफ)</span>
                                 <span id="threshold-val" class="param-value">60%</span>
                             </div>
                             <input type="range" id="threshold-slider" min="50" max="95" value="60" step="1" class="slider">
-                            <p class="param-hint">Exclude blocks scoring below this value</p>
+                            <p class="param-hint" data-i18n="ctrl_score_threshold_hint">या मूल्यापेक्षा कमी गुण असलेले ब्लॉक वगळा</p>
                         </div>
 
                         <div class="parameter-group">
                             <div class="parameter-label">
-                                <span>Max Awards / District</span>
+                                <span data-i18n="ctrl_max_awards">कमाल पुरस्कार / जिल्हा</span>
                                 <span id="max-awards-val" class="param-value">5</span>
                             </div>
                             <input type="range" id="max-awards-slider" min="1" max="15" value="5" step="1" class="slider">
-                            <p class="param-hint">Limit selection to top N blocks per district</p>
+                            <p class="param-hint" data-i18n="ctrl_max_awards_hint">प्रत्येक जिल्ह्यातील अव्वल N ब्लॉक्सपर्यंत मर्यादा</p>
                         </div>
 
                         <div class="parameter-group">
                             <div class="parameter-label">
-                                <span>Aggregation Strategy</span>
+                                <span data-i18n="ctrl_agg_strategy">एकत्रीकरण पद्धती</span>
                             </div>
                             <select id="agg-method" class="select-input">
-                                <option value="mean" selected>Average GP Percentage</option>
-                                <option value="sum_ratio">Overall Weighted Percentage (Sum of Marks)</option>
-                                <option value="max">Maximum Grampanchayat Score</option>
-                                <option value="min">Minimum Grampanchayat Score</option>
+                                <option value="mean" selected data-i18n="opt_agg_mean">सरासरी जीपी टक्केवारी (Mean)</option>
+                                <option value="sum_ratio" data-i18n="opt_agg_sum_ratio">एकूण भारित टक्केवारी (Sum Ratio)</option>
+                                <option value="max" data-i18n="opt_agg_max">कमाल ग्रामपंचायत गुण (Max)</option>
+                                <option value="min" data-i18n="opt_agg_min">किमान ग्रामपंचायत गुण (Min)</option>
                             </select>
-                            <p class="param-hint">Method used to calculate block-level score</p>
+                            <p class="param-hint" data-i18n="ctrl_agg_strategy_hint">ब्लॉक-स्तरीय गुण मोजण्यासाठी वापरलेली पद्धत</p>
                         </div>
                     </div>
 
                     <!-- Filters Card -->
                     <div class="control-card">
-                        <h3 class="card-title"><i data-lucide="filter"></i> Filters & Search</h3>
+                        <h3 class="card-title"><i data-lucide="filter"></i> <span data-i18n="ctrl_filters_search">फिल्टर आणि शोध</span></h3>
                         
                         <div class="parameter-group">
-                            <label class="parameter-label" for="district-select">Select District</label>
+                            <label class="parameter-label" for="district-select" data-i18n="ctrl_select_district">जिल्हा निवडा</label>
                             <select id="district-select" class="select-input">
-                                <option value="all">All Districts</option>
+                                <option value="all" data-i18n="opt_all_districts">सर्व जिल्हे</option>
                             </select>
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label" for="block-select">Select Block</label>
+                            <label class="parameter-label" for="block-select" data-i18n="ctrl_select_block">तालुका निवडा</label>
                             <select id="block-select" class="select-input" disabled>
-                                <option value="all">All Blocks</option>
+                                <option value="all" data-i18n="opt_all_blocks">सर्व तालुके</option>
                             </select>
                         </div>
 
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-input">Search Block/GP</label>
+                            <label class="parameter-label" for="search-input" data-i18n="ctrl_search_input">नावानुसार शोधा...</label>
                             <div class="search-container">
                                 <i data-lucide="search" class="search-icon"></i>
-                                <input type="text" id="search-input" placeholder="Search by name..." class="search-input-field">
+                                <input type="text" id="search-input" placeholder="नावानुसार शोधा..." data-i18n="ctrl_search_input" class="search-input-field">
                             </div>
                         </div>
                     </div>
@@ -196,10 +204,10 @@
                 <div id="search-sidebar-controls" class="tab-sidebar-container hidden">
                     <!-- Search Data Source Card -->
                     <div class="control-card">
-                        <h3 class="card-title"><i data-lucide="database"></i> Search Data Source</h3>
+                        <h3 class="card-title"><i data-lucide="database"></i> <span data-i18n="ctrl_search_data_source">शोध डेटा स्रोत</span></h3>
                         <div id="search-drop-zone" class="drop-zone">
                             <i data-lucide="upload-cloud" class="upload-icon"></i>
-                            <p class="drop-text">Drag & drop excel or <span>browse</span></p>
+                            <p class="drop-text" data-i18n="ctrl_drag_drop">एक्सेल फाइल ड्रॅग करा किंवा निवडा</p>
                             <input type="file" id="search-file-input" accept=".xlsx, .xls" class="hidden-input">
                         </div>
                         <div class="current-file-badge">
@@ -259,12 +267,12 @@
                 <!-- Header -->
                 <header class="main-header">
                     <div class="header-text">
-                        <h1>Performance Ranking Dashboard</h1>
-                        <p class="lead-text">Shortlist, rank, and view eligible blocks across districts dynamically.</p>
+                        <h1 data-i18n="dash_title">कामगिरी रँकिंग डॅशबोर्ड</h1>
+                        <p class="lead-text" data-i18n="dash_lead">जिल्ह्यांमधील पात्र ब्लॉक्सची माहिती, रँकिंग आणि यादी पहा.</p>
                     </div>
                     <div class="header-actions">
                         <button id="export-csv" class="btn btn-secondary">
-                            <i data-lucide="download"></i> Export CSV
+                            <i data-lucide="download"></i> <span data-i18n="btn_export_csv">CSV एक्सपोर्ट करा</span>
                         </button>
                         <button id="reset-params" class="btn btn-icon-only" title="Reset Filters">
                             <i data-lucide="refresh-cw"></i>
@@ -287,7 +295,7 @@
                                 <i data-lucide="map-pin"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Districts Processed</span>
+                                <span class="kpi-label" data-i18n="stat_districts">प्रक्रिया केलेले जिल्हे</span>
                                 <span id="kpi-districts" class="kpi-value">-</span>
                             </div>
                         </div>
@@ -297,7 +305,7 @@
                                 <i data-lucide="check-circle-2"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Total Eligible Blocks</span>
+                                <span class="kpi-label" data-i18n="stat_eligible_blocks">एकूण पात्र तालुके</span>
                                 <span id="kpi-eligible" class="kpi-value">-</span>
                             </div>
                         </div>
@@ -307,7 +315,7 @@
                                 <i data-lucide="award"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Awarded Blocks</span>
+                                <span class="kpi-label" data-i18n="stat_awarded_blocks">पुरस्कृत तालुके</span>
                                 <span id="kpi-awarded" class="kpi-value">-</span>
                             </div>
                         </div>
@@ -317,7 +325,7 @@
                                 <i data-lucide="trending-up"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Avg Awarded Score</span>
+                                <span class="kpi-label" data-i18n="stat_avg_score">सरासरी पुरस्कार गुण</span>
                                 <span id="kpi-avg-score" class="kpi-value">-</span>
                             </div>
                         </div>
@@ -328,8 +336,8 @@
                         <!-- Chart 1 -->
                         <div class="chart-card glass">
                             <div class="chart-header">
-                                <h3><i data-lucide="bar-chart-3"></i> Awarded Blocks per District</h3>
-                                <p class="chart-subtitle">Top districts by number of shortlisted blocks</p>
+                                <h3><i data-lucide="bar-chart-3"></i> <span data-i18n="chart_awarded_districts">जिल्हानिहाय पुरस्कृत तालुके</span></h3>
+                                <p class="chart-subtitle" data-i18n="chart_awarded_sub">शॉर्टलिस्ट केलेल्या ब्लॉक्सच्या संख्येनुसार</p>
                             </div>
                             <div class="chart-body ticker-container">
                                 <div class="ticker-wrap">
@@ -341,8 +349,8 @@
                         <!-- Chart 2 -->
                         <div class="chart-card glass">
                             <div class="chart-header">
-                                <h3><i data-lucide="trophy"></i> Top 10 Performing Blocks</h3>
-                                <p class="chart-subtitle">Highest aggregated scores across all districts</p>
+                                <h3><i data-lucide="trophy"></i> <span data-i18n="chart_top_blocks">अव्वल १० कामगिरी करणारे तालुके</span></h3>
+                                <p class="chart-subtitle" data-i18n="chart_top_sub">सर्व जिल्ह्यांमध्ये सर्वोच्च एकत्रित गुण</p>
                             </div>
                             <div class="chart-body">
                                 <div id="top-blocks-chart"></div>
@@ -423,12 +431,12 @@
                 <!-- Header -->
                 <header class="main-header">
                     <div class="header-text">
-                        <h1>GP & BDO Code Search Portal</h1>
-                        <p class="lead-text">Query BDO-verified and GP self-reported datasets by Division, District, BDOCode, or GPLGDCode.</p>
+                        <h1 data-i18n="search_portal_title">जीपी आणि बीडीओ कोड शोध पोर्टल</h1>
+                        <p class="lead-text" data-i18n="search_portal_lead">विभाग, जिल्हा, बीडीओ कोड किंवा जीपी एलजीडी कोडद्वारे डेटा क्वेरी करा.</p>
                     </div>
                     <div class="header-actions">
                         <button id="search-export-csv" class="btn btn-secondary" disabled>
-                            <i data-lucide="download"></i> Export Results
+                            <i data-lucide="download"></i> <span data-i18n="btn_export_results">निकाल एक्सपोर्ट करा</span>
                         </button>
                     </div>
                 </header>
@@ -437,48 +445,47 @@
                 <section class="search-panel-section glass" style="padding: 24px; margin-bottom: 24px; display: flex; flex-direction: column; gap: 16px;">
                     <h3 style="font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
                         <i data-lucide="search" style="color: var(--primary); width: 20px; height: 20px;"></i>
-                        Search Database
+                        <span data-i18n="search_box_title">डेटाबेस शोधा</span>
                     </h3>
                     <div class="search-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap: 16px; align-items: flex-end;">
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-division-select">Select Division</label>
+                            <label class="parameter-label" for="search-division-select" data-i18n="lbl_division">विभाग निवडा</label>
                             <select id="search-division-select" class="select-input">
-                                <option value="all">All Divisions</option>
+                                <option value="all" data-i18n="opt_all_divisions">सर्व महसूल विभाग</option>
                             </select>
                         </div>
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-district-select">Select District</label>
+                            <label class="parameter-label" for="search-district-select" data-i18n="lbl_district">जिल्हा निवडा</label>
                             <select id="search-district-select" class="select-input">
-                                <option value="all">All Districts</option>
+                                <option value="all" data-i18n="opt_all_districts">सर्व जिल्हे</option>
                             </select>
                         </div>
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-type-select">Search Type</label>
+                            <label class="parameter-label" for="search-type-select" data-i18n="lbl_search_type">शोध प्रकार</label>
                             <select id="search-type-select" class="select-input">
-                                <option value="BDOCode">BDO Code (Block level)</option>
-                                <option value="GPLGDCode" selected>GP LGD Code (GP level)</option>
-                                <option value="Combine">Combine BDO & GP (Comparative)</option>
+                                <option value="BDOCode" data-i18n="opt_bdo_code">बीडीओ कोड (तालुका स्तर)</option>
+                                <option value="GPLGDCode" selected data-i18n="opt_gp_code">जीपी एलजीडी कोड (ग्रामपंचायत स्तर)</option>
                             </select>
                         </div>
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-code-select">Select Code</label>
+                            <label class="parameter-label" for="search-code-select" data-i18n="lbl_select_code">कोड निवडा</label>
                             <select id="search-code-select" class="select-input">
-                                <option value="all">All Codes</option>
+                                <option value="all">सर्व कोड</option>
                             </select>
                         </div>
                         <div class="parameter-group">
-                            <label class="parameter-label" for="search-text-input">Manual Code Search</label>
+                            <label class="parameter-label" for="search-text-input" data-i18n="lbl_manual_search">मॅन्युअल कोड शोध</label>
                             <div class="search-container">
                                 <i data-lucide="search" class="search-icon"></i>
-                                <input type="text" id="search-text-input" placeholder="Type partial or exact code..." class="search-input-field">
+                                <input type="text" id="search-text-input" placeholder="कोड शोधा..." class="search-input-field">
                             </div>
                         </div>
                         <div style="display: flex; gap: 12px; margin-top: 10px;">
                             <button id="search-submit-btn" class="btn" style="background: var(--primary); color: white;">
-                                <i data-lucide="search"></i> Search
+                                <i data-lucide="search"></i> <span data-i18n="btn_search">शोधा</span>
                             </button>
                             <button id="search-reset-btn" class="btn btn-secondary" title="Reset Search">
-                                <i data-lucide="refresh-cw"></i> Reset
+                                <i data-lucide="refresh-cw"></i> <span data-i18n="btn_reset">रीसेट</span>
                             </button>
                         </div>
                     </div>
@@ -499,7 +506,7 @@
                                 <i data-lucide="list"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Total Matching Records</span>
+                                <span class="kpi-label" data-i18n="stat_total_matching">एकूण जुळणाऱ्या नोंदी</span>
                                 <span id="search-kpi-total" class="kpi-value">0</span>
                             </div>
                         </div>
@@ -508,7 +515,7 @@
                                 <i data-lucide="database"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">BDO Sheet Matches</span>
+                                <span class="kpi-label" data-i18n="tab_bdo_records">बीडीओ पडताळणी नोंदी</span>
                                 <span id="search-kpi-bdo" class="kpi-value">0</span>
                             </div>
                         </div>
@@ -517,7 +524,7 @@
                                 <i data-lucide="file-text"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">GP Sheet Matches</span>
+                                <span class="kpi-label" data-i18n="stat_gp_matches">जीपी शीट नोंदी</span>
                                 <span id="search-kpi-gp" class="kpi-value">0</span>
                             </div>
                         </div>
@@ -526,7 +533,7 @@
                                 <i data-lucide="globe"></i>
                             </div>
                             <div class="kpi-data">
-                                <span class="kpi-label">Query Search Type</span>
+                                <span class="kpi-label" data-i18n="stat_search_type">सक्रिय शोध प्रकार</span>
                                 <span id="search-kpi-type" class="kpi-value" style="font-size: 14px;">-</span>
                             </div>
                         </div>

@@ -1128,3 +1128,14 @@ function showSearchLoading(active) {
         searchLoadingOverlay.classList.remove('active');
     }
 }
+
+// Re-render search tables when language changes
+window.addEventListener('portalLanguageChanged', () => {
+    if (searchFilteredGp && searchFilteredGp.length > 0) {
+        renderGpTable();
+    }
+    if (searchFilteredBdo && searchFilteredBdo.length > 0) {
+        renderBdoTable();
+    }
+});
+

@@ -149,8 +149,49 @@ h1, h2, h3, h4, .logo {
 .official-portal-header-right {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     padding-right: 18px;
+}
+
+/* Bilingual Language Switcher Component */
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 3px 6px;
+    gap: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    font-family: 'Plus Jakarta Sans', 'Mukta', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.lang-btn:hover {
+    color: var(--primary);
+}
+
+.lang-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(11, 87, 157, 0.25);
+}
+
+.lang-divider {
+    font-size: 11px;
+    color: #94a3b8;
+    user-select: none;
 }
 
 .gov-emblems-group {
