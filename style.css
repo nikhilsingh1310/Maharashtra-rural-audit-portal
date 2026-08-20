@@ -1736,3 +1736,488 @@ tr.table-row.open .expand-btn i {
     color: var(--text-muted);
 }
 
+/* ==========================================================================
+   OFFICIAL GOVERNMENT LANDING PAGE & PORTAL HOME STYLES
+   ========================================================================== */
+
+.landing-page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    background: #f4f7fa;
+    color: var(--text-primary);
+}
+
+/* 1. Top Government Utility Bar */
+.gov-top-bar {
+    background: #111827;
+    color: #9ca3af;
+    font-size: 11px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gov-top-bar-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gov-utility-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gov-badge-red {
+    background: #d92550;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gov-badge-green {
+    background: #28a745;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gov-utility-right {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-weight: 500;
+}
+
+/* 2. Official Main Header Banner */
+.official-main-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 20px 0;
+}
+
+.official-header-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gov-seal-brand {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.landing-logo {
+    height: 76px;
+    width: auto;
+    object-fit: contain;
+}
+
+.gov-seal-text h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.2;
+}
+
+.gov-seal-text h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 2px;
+}
+
+.gov-seal-text p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.abhiyan-tagline-badge {
+    background: linear-gradient(135deg, #fff6e5, #feebd0);
+    border: 1px solid #fce3b8;
+    color: #d96f13;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px rgba(244, 129, 31, 0.1);
+}
+
+/* 3. Main Royal Blue Navigation Bar */
+.gov-navbar {
+    background: #0b579d;
+    box-shadow: 0 4px 12px rgba(11, 87, 157, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.gov-navbar-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+}
+
+.gov-nav-item {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.gov-nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.gov-nav-item.active {
+    background: #063d72;
+    color: #ffffff;
+    border-bottom-color: #f4811f;
+}
+
+.gov-nav-item.nav-highlight {
+    color: #fde68a;
+}
+
+.gov-nav-item.nav-highlight:hover {
+    color: #ffffff;
+}
+
+/* 4. Main Landing Content Body */
+.landing-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+}
+
+/* Hero Stats Strip */
+.hero-stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.stat-pill {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius-md);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(11, 87, 157, 0.03);
+}
+
+.stat-pill-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--primary-glow);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-pill-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-pill-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.stat-pill-lbl {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* Section Title Wrappers */
+.section-title-wrapper {
+    margin-bottom: 20px;
+}
+
+.section-title-wrapper h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.section-title-wrapper p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* Cards Meta List */
+.card-badge-top {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: rgba(11, 87, 157, 0.08);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+}
+
+.card-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.card-meta-list span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-meta-list i {
+    width: 14px;
+    height: 14px;
+    color: var(--success);
+}
+
+/* 5. Campaign Pillars Grid (कामे आणि संबंधित उपक्रम/योजना) */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.pillar-card {
+    border-radius: var(--border-radius-md);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border: 1px solid transparent;
+    transition: var(--transition-smooth);
+}
+
+.pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
+}
+
+.pillar-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pillar-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pillar-card p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.pillar-tag {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+.pillar-pink { background: var(--pastel-pink-bg); border-color: var(--pastel-pink-border); }
+.pillar-yellow { background: var(--pastel-yellow-bg); border-color: var(--pastel-yellow-border); }
+.pillar-mint { background: var(--pastel-mint-bg); border-color: var(--pastel-mint-border); }
+.pillar-sky { background: var(--pastel-sky-bg); border-color: var(--pastel-sky-border); }
+
+/* 6. Award Structure Cards (विशेष वैशिष्ट्ये आणि पुरस्कार) */
+.awards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+}
+
+.award-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius-md);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 4px 12px rgba(11, 87, 157, 0.03);
+}
+
+.award-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 16px;
+}
+
+.award-card-header h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.award-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.award-icon-gold { color: #f4811f; width: 32px; height: 32px; }
+.award-icon-blue { color: #0b579d; width: 32px; height: 32px; }
+.award-icon-purple { color: #8b5cf6; width: 32px; height: 32px; }
+
+.award-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.award-tier h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.award-tier ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.award-tier li {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+}
+
+.award-tier li strong {
+    color: #d96f13;
+}
+
+/* 7. Official Government Footer Bar */
+.gov-footer {
+    background: #0b579d;
+    color: #ffffff;
+    padding: 32px 0;
+    margin-top: 40px;
+    border-top: 4px solid #f4811f;
+}
+
+.gov-footer-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.gov-footer-brand h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.gov-footer-brand p {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 600px;
+    line-height: 1.5;
+}
+
+.gov-footer-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+}
+
+.gov-footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.gov-footer-links a:hover {
+    text-decoration: underline;
+}
+
+.gov-tech-tag {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+
