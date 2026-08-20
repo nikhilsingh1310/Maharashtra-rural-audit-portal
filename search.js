@@ -6,15 +6,29 @@ let searchFilteredGp = []; // Filtered GP records for rendering
 let searchPortalInitialized = false;
 
 // Search configuration state
-let searchType = 'GPLGDCode'; // 'BDOCode' or 'GPLGDCode'
-let selectedCodeVal = 'all';  // Dropdown code value
-let searchInputText = '';     // Text input search value
+let selectedDivisionVal = 'all'; // Dropdown division value
+let selectedDistrictVal = 'all'; // Dropdown district value
+let searchType = 'GPLGDCode';    // 'BDOCode' or 'GPLGDCode' or 'Combine'
+let selectedCodeVal = 'all';     // Dropdown code value
+let searchInputText = '';        // Text input search value
 
 // Table pagination and sorting states
 let bdoPagination = { page: 1, pageSize: 20 };
 let gpPagination = { page: 1, pageSize: 20 };
 let bdoSort = { column: 'GP LGDCode', direction: 'asc' };
 let gpSort = { column: 'GP LGDCode', direction: 'asc' };
+
+// Official Maharashtra 34 Districts to 6 Administrative Divisions Mapping
+const DISTRICT_TO_DIVISION = {
+    'Palghar': 'Konkan', 'Thane': 'Konkan', 'Raigad': 'Konkan', 'Ratnagiri': 'Konkan', 'Sindhudurg': 'Konkan',
+    'Pune': 'Pune', 'Satara': 'Pune', 'Sangli': 'Pune', 'Solapur': 'Pune', 'Kolhapur': 'Pune',
+    'Nashik': 'Nashik', 'Dhule': 'Nashik', 'Nandurbar': 'Nashik', 'Jalgaon': 'Nashik', 'Ahilyanagar': 'Nashik',
+    'Chh.Sambhajinagar': 'Chhatrapati Sambhajinagar', 'Jalna': 'Chhatrapati Sambhajinagar', 'Parbhani': 'Chhatrapati Sambhajinagar',
+    'Hingoli': 'Chhatrapati Sambhajinagar', 'Nanded': 'Chhatrapati Sambhajinagar', 'Beed': 'Chhatrapati Sambhajinagar',
+    'Latur': 'Chhatrapati Sambhajinagar', 'Dharashiv': 'Chhatrapati Sambhajinagar',
+    'Amravati': 'Amravati', 'Akola': 'Amravati', 'Buldhana': 'Amravati', 'Washim': 'Amravati', 'Yavatmal': 'Amravati',
+    'Nagpur': 'Nagpur', 'Wardha': 'Nagpur', 'Bhandara': 'Nagpur', 'Gondia': 'Nagpur', 'Chandrapur': 'Nagpur', 'Gadchiroli': 'Nagpur'
+};
 
 // Helper to safely format float values even if they are string types, undefined, or null
 function safeFormatFloat(val, decimals = 2) {
@@ -25,6 +39,8 @@ function safeFormatFloat(val, decimals = 2) {
 }
 
 // DOM Elements
+const searchDivisionSelect = document.getElementById('search-division-select');
+const searchDistrictSelect = document.getElementById('search-district-select');
 const searchTypeSelect = document.getElementById('search-type-select');
 const searchCodeSelect = document.getElementById('search-code-select');
 const searchTextField = document.getElementById('search-text-input');
@@ -70,22 +86,48 @@ function initSearchPortal() {
 async function loadDefaultSearchFile() {
     showSearchLoading(true);
     try {
-        const response = await fetch('./Report GP and BDO 09.06.2025.xlsx');
+        const response = await fetch('./Report GP and BDO 20.08.2026.xlsx');
         if (!response.ok) {
             throw new Error(`Failed to load default file: ${response.statusText}`);
         }
         const data = await response.arrayBuffer();
-        parseSearchWorkbook(data, 'Report GP and BDO 09.06.2025.xlsx');
+        parseSearchWorkbook(data, 'Report GP and BDO 20.08.2026.xlsx');
     } catch (error) {
         console.error("Error loading default search spreadsheet:", error);
-        alert("Could not load default Report GP and BDO 09.06.2025.xlsx spreadsheet automatically. Please upload manually.");
+        alert("Could not load default Report GP and BDO 20.08.2026.xlsx spreadsheet automatically. Please upload manually.");
         showSearchLoading(false);
     }
 }
 
 // Listeners Setup
 function initSearchEventListeners() {
-    // Dropdowns and inputs
+    // Division Select listener
+    if (searchDivisionSelect) {
+        searchDivisionSelect.addEventListener('change', () => {
+            selectedDivisionVal = searchDivisionSelect.value;
+            selectedDistrictVal = 'all';
+            selectedCodeVal = 'all';
+            searchTextField.value = '';
+            
+            populateDistrictDropdown();
+            populateCodeDropdown();
+            executeSearch();
+        });
+    }
+
+    // District Select listener
+    if (searchDistrictSelect) {
+        searchDistrictSelect.addEventListener('change', () => {
+            selectedDistrictVal = searchDistrictSelect.value;
+            selectedCodeVal = 'all';
+            searchTextField.value = '';
+            
+            populateCodeDropdown();
+            executeSearch();
+        });
+    }
+
+    // Search Type Select listener
     searchTypeSelect.addEventListener('change', () => {
         searchType = searchTypeSelect.value;
         searchTextField.value = '';
@@ -94,11 +136,13 @@ function initSearchEventListeners() {
         executeSearch();
     });
 
+    // Select Code listener
     searchCodeSelect.addEventListener('change', () => {
         selectedCodeVal = searchCodeSelect.value;
         executeSearch();
     });
 
+    // Text Search Input listener
     searchTextField.addEventListener('input', () => {
         // Clear dropdown if typing manually to avoid conflict
         if (searchCodeSelect.value !== 'all') {
@@ -195,7 +239,7 @@ function normalizeDatasetKeys(data, type) {
             }
         });
         
-        // Fallback for LGD Code if still missing (checks if key has 'lgd' or is exactly 'gp')
+        // Fallback for LGD Code if still missing
         if (type === 'BDO' && normalized['GP LGDCode'] === undefined) {
             const lgdKey = Object.keys(row).find(k => k.toLowerCase().includes('lgd') || k.toLowerCase().trim() === 'gp');
             if (lgdKey) normalized['GP LGDCode'] = parseInt(row[lgdKey]);
@@ -204,6 +248,18 @@ function normalizeDatasetKeys(data, type) {
             const lgdKey = Object.keys(row).find(k => k.toLowerCase().includes('lgd') || k.toLowerCase().trim() === 'gp');
             if (lgdKey) normalized['GP LGDCode'] = parseInt(row[lgdKey]);
         }
+
+        // Determine District
+        const rawDistrict = (normalized['DISTRICT VERIFIED'] || normalized['DISTRICT VIRIFIED'] || normalized['GPDistrict'] || '').toString().trim();
+        normalized['District'] = rawDistrict;
+        
+        // Determine Division (derived from District mapping, falling back to raw Division Name if available)
+        let div = DISTRICT_TO_DIVISION[rawDistrict];
+        if (!div && row['Division Name'] && row['Division Name'] !== 'Akola') {
+            const rawDiv = row['Division Name'].toString().trim();
+            div = rawDiv.charAt(0).toUpperCase() + rawDiv.slice(1).toLowerCase();
+        }
+        normalized['Division'] = div || 'Other';
         
         return normalized;
     });
@@ -252,32 +308,104 @@ function updateMetadataSidebar() {
     metaUniqueGp.innerText = gpCodes.size.toLocaleString();
 }
 
-// Populate the dynamic code picker list
+// Populate the Division dropdown dynamically
+function populateDivisionDropdown() {
+    if (!searchDivisionSelect) return;
+    searchDivisionSelect.innerHTML = '<option value="all">All Divisions</option>';
+    
+    const divisions = Array.from(new Set([
+        ...searchBdoData.map(r => r.Division),
+        ...searchGpData.map(r => r.Division)
+    ].filter(Boolean))).sort();
+    
+    divisions.forEach(div => {
+        const opt = document.createElement('option');
+        opt.value = div;
+        opt.textContent = div;
+        searchDivisionSelect.appendChild(opt);
+    });
+    
+    searchDivisionSelect.value = selectedDivisionVal;
+}
+
+// Populate the District dropdown dynamically based on selected Division
+function populateDistrictDropdown() {
+    if (!searchDistrictSelect) return;
+    searchDistrictSelect.innerHTML = '<option value="all">All Districts</option>';
+    
+    let districtsSourceBdo = searchBdoData;
+    let districtsSourceGp = searchGpData;
+    
+    if (selectedDivisionVal !== 'all') {
+        districtsSourceBdo = searchBdoData.filter(r => r.Division === selectedDivisionVal);
+        districtsSourceGp = searchGpData.filter(r => r.Division === selectedDivisionVal);
+    }
+    
+    const districts = Array.from(new Set([
+        ...districtsSourceBdo.map(r => r.District),
+        ...districtsSourceGp.map(r => r.District)
+    ].filter(Boolean))).sort();
+    
+    districts.forEach(dist => {
+        const opt = document.createElement('option');
+        opt.value = dist;
+        opt.textContent = dist;
+        searchDistrictSelect.appendChild(opt);
+    });
+    
+    searchDistrictSelect.value = selectedDistrictVal;
+}
+
+// Populate the dynamic code picker list based on selected Division, District, and Search Type
 function populateCodeDropdown() {
     searchCodeSelect.innerHTML = '<option value="all">All Codes</option>';
     
-    // Combine unique GP LGD Codes from both worksheets
-    const uniqueGpCodes = Array.from(new Set([
-        ...searchBdoData.map(r => r['GP LGDCode']),
-        ...searchGpData.map(r => r['GP LGDCode'])
-    ].filter(Boolean))).sort((a, b) => a - b);
+    let bdoFiltered = searchBdoData;
+    let gpFiltered = searchGpData;
     
-    uniqueGpCodes.forEach(code => {
+    if (selectedDivisionVal !== 'all') {
+        bdoFiltered = bdoFiltered.filter(r => r.Division === selectedDivisionVal);
+        gpFiltered = gpFiltered.filter(r => r.Division === selectedDivisionVal);
+    }
+    
+    if (selectedDistrictVal !== 'all') {
+        bdoFiltered = bdoFiltered.filter(r => r.District === selectedDistrictVal);
+        gpFiltered = gpFiltered.filter(r => r.District === selectedDistrictVal);
+    }
+    
+    let uniqueCodes = [];
+    
+    if (searchType === 'BDOCode') {
+        uniqueCodes = Array.from(new Set(bdoFiltered.map(r => r.BDOCode).filter(Boolean))).sort((a, b) => a - b);
+    } else {
+        uniqueCodes = Array.from(new Set([
+            ...bdoFiltered.map(r => r['GP LGDCode']),
+            ...gpFiltered.map(r => r['GP LGDCode'])
+        ].filter(Boolean))).sort((a, b) => a - b);
+    }
+    
+    uniqueCodes.forEach(code => {
         const opt = document.createElement('option');
         opt.value = code;
         opt.textContent = code;
         searchCodeSelect.appendChild(opt);
     });
+    
+    searchCodeSelect.value = selectedCodeVal;
 }
 
 // Reset filters to defaults
 function resetSearchFilters() {
+    selectedDivisionVal = 'all';
+    selectedDistrictVal = 'all';
     searchTypeSelect.value = 'GPLGDCode';
     searchType = 'GPLGDCode';
     
     searchTextField.value = '';
     searchInputText = '';
     
+    populateDivisionDropdown();
+    populateDistrictDropdown();
     populateCodeDropdown();
     
     searchCodeSelect.value = 'all';
@@ -297,12 +425,26 @@ function executeSearch() {
             let finalBdoMatches = [];
             let finalGpMatches = [];
             
-            // Check if we are searching "all" records
+            // First step: Filter datasets by active Division and District selection
+            let poolBdo = searchBdoData;
+            let poolGp = searchGpData;
+            
+            if (selectedDivisionVal !== 'all') {
+                poolBdo = poolBdo.filter(r => r.Division === selectedDivisionVal);
+                poolGp = poolGp.filter(r => r.Division === selectedDivisionVal);
+            }
+            
+            if (selectedDistrictVal !== 'all') {
+                poolBdo = poolBdo.filter(r => r.District === selectedDistrictVal);
+                poolGp = poolGp.filter(r => r.District === selectedDistrictVal);
+            }
+            
+            // Check if we are searching "all" records within the selected Division/District
             const isAllQuery = selectedCodeVal === 'all' && searchInputText === '';
             
             if (isAllQuery) {
-                finalBdoMatches = [...searchBdoData];
-                finalGpMatches = [...searchGpData];
+                finalBdoMatches = [...poolBdo];
+                finalGpMatches = [...poolGp];
             } else {
                 // Determine targeted code or search string
                 const targetCode = selectedCodeVal !== 'all' ? selectedCodeVal : searchInputText;
@@ -310,38 +452,35 @@ function executeSearch() {
                 if (targetCode !== '') {
                     if (queryType === 'BDOCode') {
                         if (selectedCodeVal !== 'all') {
-                            const selectedLgd = parseInt(selectedCodeVal);
-                            finalBdoMatches = searchBdoData.filter(r => r['GP LGDCode'] === selectedLgd);
+                            const numericCode = parseInt(selectedCodeVal);
+                            finalBdoMatches = poolBdo.filter(r => r.BDOCode === numericCode || r['GP LGDCode'] === numericCode);
                         } else {
-                            // If they typed manually, check if it's an LGD Code first
-                            const bdoRow = searchBdoData.find(r => r['GP LGDCode'] !== undefined && r['GP LGDCode'].toString() === targetCode);
-                            if (bdoRow) {
-                                finalBdoMatches = searchBdoData.filter(r => r['GP LGDCode'] === bdoRow['GP LGDCode']);
-                            } else {
-                                // Otherwise treat as BDO Code or part of BDO Code (block level)
-                                finalBdoMatches = searchBdoData.filter(r => r.BDOCode !== undefined && r.BDOCode.toString().toLowerCase().includes(targetCode));
-                            }
+                            // If typed manually, check LGD or BDO Code match
+                            finalBdoMatches = poolBdo.filter(r => 
+                                (r.BDOCode !== undefined && r.BDOCode.toString().toLowerCase().includes(targetCode)) ||
+                                (r['GP LGDCode'] !== undefined && r['GP LGDCode'].toString().toLowerCase().includes(targetCode))
+                            );
                         }
                         
                         // Cross-reference GP LGD Codes from BDO matches to retrieve GP self-reported records
                         const matchedGpLgds = new Set(finalBdoMatches.map(r => r['GP LGDCode']).filter(Boolean));
-                        finalGpMatches = searchGpData.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
+                        finalGpMatches = poolGp.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
                         
                     } else if (queryType === 'GPLGDCode') {
                         // Find matching records in GP tab by GPLGDCode
                         if (selectedCodeVal !== 'all') {
                             const numericCode = parseInt(selectedCodeVal);
-                            finalGpMatches = searchGpData.filter(r => r['GP LGDCode'] === numericCode);
+                            finalGpMatches = poolGp.filter(r => r['GP LGDCode'] === numericCode);
                         } else {
-                            finalGpMatches = searchGpData.filter(r => r['GP LGDCode'] !== undefined && r['GP LGDCode'].toString().toLowerCase().includes(targetCode));
+                            finalGpMatches = poolGp.filter(r => r['GP LGDCode'] !== undefined && r['GP LGDCode'].toString().toLowerCase().includes(targetCode));
                         }
                         
                         // Cross-reference GP LGD Codes to retrieve matching records from BDO verified sheet
                         const matchedGpLgds = new Set(finalGpMatches.map(r => r['GP LGDCode']).filter(Boolean));
-                        finalBdoMatches = searchBdoData.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
+                        finalBdoMatches = poolBdo.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
                         
                     } else if (queryType === 'Combine') {
-                        // Comparative mode: Find matching records in both by GP LGDCode
+                        // Comparative mode: Find matching records in both by GP LGDCode or Text
                         let numericCode = null;
                         if (selectedCodeVal !== 'all') {
                             numericCode = parseInt(selectedCodeVal);
@@ -351,11 +490,11 @@ function executeSearch() {
                         }
                         
                         if (numericCode !== null) {
-                            finalGpMatches = searchGpData.filter(r => r['GP LGDCode'] === numericCode);
-                            finalBdoMatches = searchBdoData.filter(r => r['GP LGDCode'] === numericCode);
+                            finalGpMatches = poolGp.filter(r => r['GP LGDCode'] === numericCode);
+                            finalBdoMatches = poolBdo.filter(r => r['GP LGDCode'] === numericCode);
                         } else {
                             // Text query: support matching text in GP Name, Taluka, District
-                            finalGpMatches = searchGpData.filter(r => 
+                            finalGpMatches = poolGp.filter(r => 
                                 (r['GP LGDCode'] !== undefined && r['GP LGDCode'].toString().includes(targetCode)) ||
                                 (r.GrampanchayatName && r.GrampanchayatName.toLowerCase().includes(targetCode)) ||
                                 (r.GPTaluka && r.GPTaluka.toLowerCase().includes(targetCode)) ||
@@ -363,7 +502,7 @@ function executeSearch() {
                             );
                             
                             const matchedGpLgds = new Set(finalGpMatches.map(r => r['GP LGDCode']).filter(Boolean));
-                            finalBdoMatches = searchBdoData.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
+                            finalBdoMatches = poolBdo.filter(r => r['GP LGDCode'] !== undefined && matchedGpLgds.has(r['GP LGDCode']));
                         }
                     }
                 }

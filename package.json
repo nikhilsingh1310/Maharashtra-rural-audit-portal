@@ -1,0 +1,8 @@
+{
+  "name": "mspra-portal",
+  "version": "1.0.0",
+  "description": "Chief Minister Samruddha Panchayat Raj Abhiyan (MSPRA) Portal",
+  "scripts": {
+    "dev": "npx -y serve ."
+  }
+}

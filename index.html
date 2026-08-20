@@ -183,7 +183,7 @@
                         </div>
                         <div class="current-file-badge">
                             <i data-lucide="file-spreadsheet"></i>
-                            <span id="search-current-file-name" title="Report GP and BDO 09.06.2025.xlsx">Report GP and BDO 09.06.2025.xlsx</span>
+                            <span id="search-current-file-name" title="Report GP and BDO 20.08.2026.xlsx">Report GP and BDO 20.08.2026.xlsx</span>
                         </div>
                     </div>
 
@@ -403,7 +403,7 @@
                 <header class="main-header">
                     <div class="header-text">
                         <h1>GP & BDO Code Search Portal</h1>
-                        <p class="lead-text">Query BDO-verified and GP self-reported datasets by BDOCode or GPLGDCode.</p>
+                        <p class="lead-text">Query BDO-verified and GP self-reported datasets by Division, District, BDOCode, or GPLGDCode.</p>
                     </div>
                     <div class="header-actions">
                         <button id="search-export-csv" class="btn btn-secondary" disabled>
@@ -418,7 +418,19 @@
                         <i data-lucide="search" style="color: var(--primary); width: 20px; height: 20px;"></i>
                         Search Database
                     </h3>
-                    <div class="search-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto; gap: 16px; align-items: flex-end;">
+                    <div class="search-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap: 16px; align-items: flex-end;">
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-division-select">Select Division</label>
+                            <select id="search-division-select" class="select-input">
+                                <option value="all">All Divisions</option>
+                            </select>
+                        </div>
+                        <div class="parameter-group">
+                            <label class="parameter-label" for="search-district-select">Select District</label>
+                            <select id="search-district-select" class="select-input">
+                                <option value="all">All Districts</option>
+                            </select>
+                        </div>
                         <div class="parameter-group">
                             <label class="parameter-label" for="search-type-select">Search Type</label>
                             <select id="search-type-select" class="select-input">
