@@ -20,287 +20,45 @@
 <body>
     <!-- Landing Page -->
     <div id="landing-page-container" class="landing-page-container">
-        <!-- Top Government Utility Bar -->
-        <div class="gov-top-bar">
-            <div class="gov-top-bar-inner">
-                <div class="gov-utility-left">
-                    <span class="gov-badge-red"><i data-lucide="search" style="width: 12px; height: 12px;"></i></span>
-                    <span class="gov-badge-green"><i data-lucide="mic" style="width: 12px; height: 12px;"></i></span>
-                    <span class="gov-date">Aug 20, 2026 • Performance & Audit Portal</span>
-                </div>
-                <div class="gov-utility-right">
-                    <span>दिशादर्शककाकडे जा</span>
-                    <span>|</span>
-                    <span>मुख्य विषयाकडे जा</span>
-                    <span>|</span>
-                    <span class="font-size-adjust">अ-  अ  अ+</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Official Header Banner -->
-        <div class="official-main-header">
-            <div class="official-header-inner">
-                <div class="gov-seal-brand">
-                    <img src="maharashtra_logo.png?v=1.2.4" alt="Emblem of Maharashtra" class="landing-logo">
-                    <div class="gov-seal-text">
-                        <h1>मुख्यमंत्री समृद्ध पंचायत राज अभियान</h1>
-                        <h2>Chief Minister Samruddha Panchayat Raj Abhiyan</h2>
-                        <p>ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र • Rural Development & Panchayat Raj Department, Maharashtra</p>
-                    </div>
-                </div>
-                <div class="gov-emblem-wrapper">
-                    <div class="abhiyan-tagline-badge">
-                        <span>सक्षम पंचायत • समृद्ध गाव</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Royal Blue Navigation Bar -->
-        <nav class="gov-navbar">
-            <div class="gov-navbar-inner">
-                <button class="gov-nav-item active" id="nav-home-btn">
-                    <i data-lucide="home"></i>
-                    <span>मुख्यपृष्ठ (Home)</span>
-                </button>
-                <button class="gov-nav-item" id="nav-pillars-btn">
-                    <i data-lucide="layers"></i>
-                    <span>अभियान उपक्रम (Pillars)</span>
-                </button>
-                <button class="gov-nav-item" id="nav-awards-btn">
-                    <i data-lucide="award"></i>
-                    <span>पुरस्कार रचना (Awards)</span>
-                </button>
-                <button class="gov-nav-item nav-highlight" id="nav-rankings-btn">
-                    <i data-lucide="trophy"></i>
-                    <span>गट पडताळणी रँकिंग (Rankings)</span>
-                </button>
-                <button class="gov-nav-item nav-highlight" id="nav-search-btn">
-                    <i data-lucide="search"></i>
-                    <span>जीपी व बीडीओ शोध (Search Portal)</span>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Main Content Area -->
         <div class="landing-content">
-            <!-- Hero Campaign Stats Strip -->
-            <div class="hero-stats-strip">
-                <div class="stat-pill">
-                    <div class="stat-pill-icon"><i data-lucide="map-pin"></i></div>
-                    <div class="stat-pill-info">
-                        <span class="stat-pill-num">34 / 36</span>
-                        <span class="stat-pill-lbl">Districts Covered</span>
-                    </div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-pill-icon"><i data-lucide="grid"></i></div>
-                    <div class="stat-pill-info">
-                        <span class="stat-pill-num">345 / 358</span>
-                        <span class="stat-pill-lbl">Talukas Processed</span>
-                    </div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-pill-icon"><i data-lucide="check-circle-2"></i></div>
-                    <div class="stat-pill-info">
-                        <span class="stat-pill-num">5,815</span>
-                        <span class="stat-pill-lbl">Grampanchayats Verified</span>
-                    </div>
-                </div>
-                <div class="stat-pill">
-                    <div class="stat-pill-icon"><i data-lucide="file-check"></i></div>
-                    <div class="stat-pill-info">
-                        <span class="stat-pill-num">100%</span>
-                        <span class="stat-pill-lbl">Dual-Tier Verification</span>
-                    </div>
-                </div>
+            <div class="landing-header">
+                <img src="maharashtra_logo.png?v=1.2.4" alt="Emblem of Maharashtra" class="landing-logo">
+                <h1>Chief Minister Samruddha Panchayat Raj Abhiyan</h1>
+                <p class="landing-subtitle">Rural Development & Panchayat Raj Department • Government of Maharashtra</p>
             </div>
-
-            <!-- Primary Interactive Portal Modules (Featured Section) -->
-            <div class="section-title-wrapper">
-                <h2>अभियान विश्लेषण व शोध प्रणाली (Analytical & Audit Modules)</h2>
-                <p>Select a portal module below to launch live performance analytics or side-by-side verification records</p>
-            </div>
-
+            
             <div class="landing-grid">
                 <!-- Card 1: Block Rankings -->
                 <div class="landing-card" id="card-rankings">
-                    <div class="card-badge-top">Dynamic Ranking Engine</div>
                     <div class="card-icon-wrapper rankings-icon">
                         <i data-lucide="trophy"></i>
                     </div>
                     <h2>Block Verification Rankings</h2>
-                    <p>Analyze verified performance metrics, configure eligibility parameters, adjust award thresholds, and evaluate district-level aggregations across all 34 rural districts.</p>
-                    <div class="card-meta-list">
-                        <span><i data-lucide="check"></i> State, District & Taluka Leaderboards</span>
-                        <span><i data-lucide="check"></i> Configurable Award Thresholds</span>
-                    </div>
+                    <p>Analyze verified performance metrics, configure eligibility parameters, adjust award thresholds, and evaluate district-level aggregations.</p>
                     <button class="landing-card-btn btn-indigo">
-                        <span>Open Rankings Dashboard</span>
+                        <span>Open Dashboard</span>
                         <i data-lucide="arrow-right"></i>
                     </button>
                 </div>
                 
                 <!-- Card 2: GP & BDO Search -->
                 <div class="landing-card" id="card-search">
-                    <div class="card-badge-top">Audit Verification Portal</div>
                     <div class="card-icon-wrapper search-icon">
                         <i data-lucide="search"></i>
                     </div>
-                    <h2>GP & BDO Code Search Portal</h2>
-                    <p>Compare verified Block Development Officer (BDO) datasets side-by-side with Grampanchayat self-reported audits by Division, District, or LGD/BDO codes.</p>
-                    <div class="card-meta-list">
-                        <span><i data-lucide="check"></i> 4-Tier Cascading Filter (Division ➔ Code)</span>
-                        <span><i data-lucide="check"></i> Side-by-Side Question Mark Comparison</span>
-                    </div>
+                    <h2>GP & BDO Search Portal</h2>
+                    <p>Compare verified BDO datasets side-by-side with Grampanchayat self-reported audits by selecting or querying LGD/BDO codes.</p>
                     <button class="landing-card-btn btn-success">
                         <span>Open Search Portal</span>
                         <i data-lucide="arrow-right"></i>
                     </button>
                 </div>
             </div>
-
-            <!-- Campaign Pillars Grid Section (कामे आणि संबंधित उपक्रम/योजना) -->
-            <section class="section-block" id="pillars-section">
-                <div class="section-title-wrapper">
-                    <h2>कामे आणि संबंधित उपक्रम/योजना (Campaign Pillars & Schemes)</h2>
-                    <p>Core development focus areas evaluated under Chief Minister Samruddha Panchayat Raj Abhiyan</p>
-                </div>
-
-                <div class="pillars-grid">
-                    <div class="pillar-card pillar-pink">
-                        <div class="pillar-icon"><i data-lucide="shield-check"></i></div>
-                        <h3>पंचायत स्तरावर सुशासन</h3>
-                        <p>पंचायत स्तरावर सुशासन (लोकभिमुख आणि सक्षम पंचायत प्रशासन निर्माण करणे)</p>
-                        <span class="pillar-tag">Governance & Delivery</span>
-                    </div>
-                    <div class="pillar-card pillar-yellow">
-                        <div class="pillar-icon"><i data-lucide="coins"></i></div>
-                        <h3>स्वयंपूर्ण पंचायत</h3>
-                        <p>स्वयंपूर्ण पंचायत (स्व-निधी, सीएसआर आणि सार्वजनिक योगदानाद्वारे आर्थिकदृष्ट्या मजबूत करणे)</p>
-                        <span class="pillar-tag">Local Revenue & CSR</span>
-                    </div>
-                    <div class="pillar-card pillar-mint">
-                        <div class="pillar-icon"><i data-lucide="droplet"></i></div>
-                        <h3>पाण्याने समृद्ध व स्वच्छ गाव</h3>
-                        <p>पाण्याने समृद्ध, स्वच्छ आणि हिरवेगार गाव निर्माण करणे व पर्यावरण संरक्षण</p>
-                        <span class="pillar-tag">Cleanliness & Eco-Village</span>
-                    </div>
-                    <div class="pillar-card pillar-sky">
-                        <div class="pillar-icon"><i data-lucide="workflow"></i></div>
-                        <h3>योजनांचे एकत्रीकरण</h3>
-                        <p>केंद्र, राज्य योजना आणि इतर योजनांचे एकत्रीकरण आणि प्रभावी अंमलबजावणी</p>
-                        <span class="pillar-tag">Scheme Convergence</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Award Structure Highlights Section (विशेष वैशिष्ट्ये आणि पुरस्कार) -->
-            <section class="section-block" id="awards-section">
-                <div class="section-title-wrapper">
-                    <h2>विशेष वैशिष्ट्ये आणि पुरस्कार (Award & Prize Structure)</h2>
-                    <p>Merit awards granted at Taluka, District, Division, and State tiers for top-performing Panchayats</p>
-                </div>
-
-                <div class="awards-grid">
-                    <!-- Grampanchayat Awards Card -->
-                    <div class="award-card">
-                        <div class="award-card-header">
-                            <i data-lucide="award" class="award-icon-gold"></i>
-                            <div>
-                                <h3>ग्रामपंचायतींसाठी (Grampanchayat Awards)</h3>
-                                <p class="award-sub">तालुका व जिल्हा स्तर पुरस्कार</p>
-                            </div>
-                        </div>
-                        <div class="award-list">
-                            <div class="award-tier">
-                                <h4>तालुका स्तर:</h4>
-                                <ul>
-                                    <li><span>१ले स्थान:</span> <strong>₹१५ लाख</strong></li>
-                                    <li><span>२रे स्थान:</span> <strong>₹१२ लाख</strong></li>
-                                    <li><span>३रे स्थान:</span> <strong>₹१० लाख</strong></li>
-                                    <li><span>विशेष पुरस्कार:</span> <strong>₹५ लाख</strong></li>
-                                </ul>
-                            </div>
-                            <div class="award-tier">
-                                <h4>जिल्हा स्तर:</h4>
-                                <ul>
-                                    <li><span>१ले स्थान:</span> <strong>₹५० लाख</strong></li>
-                                    <li><span>२रे स्थान:</span> <strong>₹३० लाख</strong></li>
-                                    <li><span>३रे स्थान:</span> <strong>₹२० लाख</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Panchayat Samiti Awards Card -->
-                    <div class="award-card">
-                        <div class="award-card-header">
-                            <i data-lucide="trophy" class="award-icon-blue"></i>
-                            <div>
-                                <h3>पंचायत समितीसाठी (Panchayat Samiti)</h3>
-                                <p class="award-sub">विभागीय व राज्य स्तर पुरस्कार</p>
-                            </div>
-                        </div>
-                        <div class="award-list">
-                            <div class="award-tier">
-                                <h4>विभागीय पातळी:</h4>
-                                <ul>
-                                    <li><span>१ले स्थान:</span> <strong>₹१ कोटी</strong></li>
-                                    <li><span>२रे स्थान:</span> <strong>₹७५ लाख</strong></li>
-                                    <li><span>३रे स्थान:</span> <strong>₹६० लाख</strong></li>
-                                </ul>
-                            </div>
-                            <div class="award-tier">
-                                <h4>राज्यस्तरीय:</h4>
-                                <ul>
-                                    <li><span>१ले स्थान:</span> <strong>₹१२ कोटी</strong></li>
-                                    <li><span>२रे स्थान:</span> <strong>₹९.५ कोटी</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Zilla Parishad Awards Card -->
-                    <div class="award-card">
-                        <div class="award-card-header">
-                            <i data-lucide="medal" class="award-icon-purple"></i>
-                            <div>
-                                <h3>जिल्हा परिषदेसाठी (Zilla Parishad)</h3>
-                                <p class="award-sub">राज्य स्तर सर्वोच्च पुरस्कार</p>
-                            </div>
-                        </div>
-                        <div class="award-list">
-                            <div class="award-tier">
-                                <h4>राज्यस्तरीय सर्वोच्च स्थान:</h4>
-                                <ul>
-                                    <li><span>१ले स्थान:</span> <strong>₹१५ कोटी</strong></li>
-                                    <li><span>२रे स्थान:</span> <strong>₹१३ कोटी</strong></li>
-                                    <li><span>३रे स्थान:</span> <strong>₹१२ कोटी</strong></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Official Royal Blue Government Footer -->
-        <footer class="gov-footer">
-            <div class="gov-footer-inner">
-                <div class="gov-footer-brand">
-                    <h3>मुख्यमंत्री समृद्ध पंचायत राज अभियान</h3>
-                    <p>© मुख्यमंत्री समृद्ध पंचायत राज अभियान, महाराष्ट्र शासन, भारत यांचे हे अधिकृत संकेतस्थळ आहे. सर्व अधिकार सुरक्षित.</p>
-                </div>
-                <div class="gov-footer-links">
-                    <a href="#landing-page-container">मुख्यपृष्ठ</a>
-                    <a href="#pillars-section">अभियान उपक्रम</a>
-                    <a href="#awards-section">पुरस्कार रचना</a>
-                    <span class="gov-tech-tag">महाराष्ट्र माहिती तंत्रज्ञानाद्वारे संचालित</span>
-                </div>
+            
+            <div class="landing-footer">
+                <p>System Version 1.1.4 (Scaleable Engine) • Clean Indigo/Amber Architecture</p>
             </div>
-        </footer>
+        </div>
     </div>
 
     <!-- Main Dashboard Application Wrapper -->

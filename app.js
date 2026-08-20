@@ -69,45 +69,6 @@ window.addEventListener('DOMContentLoaded', () => {
         cardSearch.addEventListener('click', () => openDashboardTab('search'));
     }
 
-    // Header Navbar Button Event Listeners
-    const navHomeBtn = document.getElementById('nav-home-btn');
-    const navPillarsBtn = document.getElementById('nav-pillars-btn');
-    const navAwardsBtn = document.getElementById('nav-awards-btn');
-    const navRankingsBtn = document.getElementById('nav-rankings-btn');
-    const navSearchBtn = document.getElementById('nav-search-btn');
-
-    if (navHomeBtn) {
-        navHomeBtn.addEventListener('click', () => {
-            appContainer.classList.add('hidden');
-            landingPageContainer.classList.remove('fade-out');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-
-    if (navPillarsBtn) {
-        navPillarsBtn.addEventListener('click', () => {
-            appContainer.classList.add('hidden');
-            landingPageContainer.classList.remove('fade-out');
-            document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' });
-        });
-    }
-
-    if (navAwardsBtn) {
-        navAwardsBtn.addEventListener('click', () => {
-            appContainer.classList.add('hidden');
-            landingPageContainer.classList.remove('fade-out');
-            document.getElementById('awards-section')?.scrollIntoView({ behavior: 'smooth' });
-        });
-    }
-
-    if (navRankingsBtn) {
-        navRankingsBtn.addEventListener('click', () => openDashboardTab('rankings'));
-    }
-
-    if (navSearchBtn) {
-        navSearchBtn.addEventListener('click', () => openDashboardTab('search'));
-    }
-
     portalNavBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const activeTab = btn.getAttribute('data-tab');
