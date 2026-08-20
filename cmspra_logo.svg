@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="70" height="70">
+  <!-- CMSPRA Multi-Color Campaign Wheel Logo -->
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring with 8 Colored Petals/Sectors -->
+  <g filter="url(#shadow)">
+    <!-- Red Sector (Top) -->
+    <path d="M80 80 L70 12 A70 70 0 0 1 90 12 Z" fill="#e11d48"/>
+    <!-- Orange Sector -->
+    <path d="M80 80 L90 12 A70 70 0 0 1 128 32 Z" fill="#f97316"/>
+    <circle cx="110" cy="22" r="5" fill="#f97316"/>
+    <!-- Yellow/Amber Sector -->
+    <path d="M80 80 L128 32 A70 70 0 0 1 148 70 Z" fill="#eab308"/>
+    <circle cx="138" cy="50" r="5" fill="#eab308"/>
+    <!-- Cyan/Teal Sector -->
+    <path d="M80 80 L148 70 A70 70 0 0 1 148 90 Z" fill="#06b6d4"/>
+    <circle cx="148" cy="80" r="5" fill="#06b6d4"/>
+    <!-- Blue Sector -->
+    <path d="M80 80 L148 90 A70 70 0 0 1 128 128 Z" fill="#3b82f6"/>
+    <circle cx="138" cy="110" r="5" fill="#3b82f6"/>
+    <!-- Purple/Violet Sector -->
+    <path d="M80 80 L128 128 A70 70 0 0 1 90 148 Z" fill="#8b5cf6"/>
+    <circle cx="110" cy="138" r="5" fill="#8b5cf6"/>
+    <!-- Maroon/Crimson Sector -->
+    <path d="M80 80 L90 148 A70 70 0 0 1 70 148 Z" fill="#991b1b"/>
+    <circle cx="80" cy="148" r="5" fill="#991b1b"/>
+    <!-- Orange-Red Sector -->
+    <path d="M80 80 L70 148 A70 70 0 0 1 32 128 Z" fill="#ea580c"/>
+    <circle cx="50" cy="138" r="5" fill="#ea580c"/>
+    <!-- Indigo Sector -->
+    <path d="M80 80 L32 128 A70 70 0 0 1 12 90 Z" fill="#6366f1"/>
+    <circle cx="22" cy="110" r="5" fill="#6366f1"/>
+    <!-- Teal-Green Sector -->
+    <path d="M80 80 L12 90 A70 70 0 0 1 12 70 Z" fill="#0d9488"/>
+    <circle cx="12" cy="80" r="5" fill="#0d9488"/>
+    <!-- Forest Green Sector -->
+    <path d="M80 80 L12 70 A70 70 0 0 1 32 32 Z" fill="#16a34a"/>
+    <circle cx="22" cy="50" r="5" fill="#16a34a"/>
+    <!-- Emerald Sector -->
+    <path d="M80 80 L32 32 A70 70 0 0 1 70 12 Z" fill="#10b981"/>
+    <circle cx="50" cy="22" r="5" fill="#10b981"/>
+  </g>
+
+  <!-- Center Circle (Green Village Scene) -->
+  <circle cx="80" cy="80" r="46" fill="#15803d" stroke="#ffffff" stroke-width="3"/>
+  <circle cx="80" cy="80" r="42" fill="#166534"/>
+
+  <!-- Golden Sun / Hut Symbol inside Village Scene -->
+  <circle cx="80" cy="62" r="7" fill="#fbbf24"/>
+  <!-- Ray strokes -->
+  <path d="M80 50 L80 53 M88 54 L86 56 M92 62 L89 62 M88 70 L86 68 M80 74 L80 71 M72 70 L74 68 M68 62 L71 62 M72 54 L74 56" stroke="#fbbf24" stroke-width="1.5"/>
+
+  <!-- Green Hills / River Lines -->
+  <path d="M42 90 Q60 76 80 84 Q100 92 118 82 L118 100 Q80 116 42 100 Z" fill="#22c55e"/>
+  <!-- Blue Water Wave -->
+  <path d="M46 96 Q65 88 82 94 Q100 100 114 92" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Tree Symbol -->
+  <path d="M60 84 Q66 72 72 84 Z" fill="#14532d"/>
+  <path d="M90 84 Q96 74 102 84 Z" fill="#14532d"/>
+</svg>

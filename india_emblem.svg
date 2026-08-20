@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 220" width="60" height="82">
+  <!-- State Emblem of India - Ashoka Stambha -->
+  <g fill="#9a6e3a" stroke="#845a27" stroke-width="0.8">
+    <!-- Top Lions (Left, Center, Right) -->
+    <!-- Center Lion Face & Mane -->
+    <path d="M80 18 C72 18 68 25 66 32 C62 30 58 35 60 42 C56 46 58 54 62 58 C60 66 65 74 72 78 C74 84 78 88 80 90 C82 88 86 84 88 78 C95 74 100 66 98 58 C102 54 104 46 100 42 C102 35 98 30 94 32 C92 25 88 18 80 18 Z" fill="#b08246"/>
+    <!-- Lion Eyes, Muzzle & Whiskers -->
+    <ellipse cx="74" cy="45" rx="3" ry="2" fill="#543715"/>
+    <ellipse cx="86" cy="45" rx="3" ry="2" fill="#543715"/>
+    <path d="M77 52 Q80 50 83 52 Q80 57 77 52" fill="#543715"/>
+    <path d="M75 58 Q80 62 85 58" stroke="#543715" stroke-width="1.5" fill="none"/>
+    <path d="M70 40 Q80 34 90 40" stroke="#7a5323" stroke-width="1.5" fill="none"/>
+    
+    <!-- Left Lion Profile -->
+    <path d="M52 28 C45 30 40 38 40 46 C36 48 34 56 36 62 C34 68 38 76 44 80 C48 84 56 88 62 90 C58 82 56 72 58 64 C54 58 54 48 56 40 C54 35 52 30 52 28 Z" fill="#9e733b"/>
+    <ellipse cx="44" cy="48" rx="2" ry="1.5" fill="#543715"/>
+    
+    <!-- Right Lion Profile -->
+    <path d="M108 28 C115 30 120 38 120 46 C124 48 126 56 124 62 C126 68 122 76 116 80 C112 84 104 88 98 90 C102 82 104 72 102 64 C106 58 106 48 104 40 C106 35 108 30 108 28 Z" fill="#9e733b"/>
+    <ellipse cx="116" cy="48" rx="2" ry="1.5" fill="#543715"/>
+    
+    <!-- Center Paws & Chest -->
+    <path d="M68 90 L66 122 Q72 126 80 126 Q88 126 94 122 L92 90 Q80 96 68 90 Z" fill="#a4773d"/>
+    <path d="M72 100 L72 120 M80 102 L80 122 M88 100 L88 120" stroke="#7a5323" stroke-width="1"/>
+    
+    <!-- Left Paws -->
+    <path d="M48 90 L46 120 Q54 124 62 122 L64 92 Q55 94 48 90 Z" fill="#946a34"/>
+    <!-- Right Paws -->
+    <path d="M112 90 L114 120 Q106 124 98 122 L96 92 Q105 94 112 90 Z" fill="#946a34"/>
+    
+    <!-- Capital Base Platform -->
+    <rect x="25" y="125" width="110" height="8" rx="3" fill="#b08246"/>
+    
+    <!-- Abacus (Middle Band with Ashoka Chakra, Bull and Horse) -->
+    <rect x="28" y="133" width="104" height="28" rx="2" fill="#d4a76a" stroke="#845a27"/>
+    
+    <!-- Center Ashoka Chakra -->
+    <circle cx="80" cy="147" r="11" fill="#ffffff" stroke="#1d4ed8" stroke-width="1.8"/>
+    <circle cx="80" cy="147" r="2.5" fill="#1d4ed8"/>
+    <!-- 24 Spokes -->
+    <g stroke="#1d4ed8" stroke-width="0.7">
+      <line x1="80" y1="136" x2="80" y2="158"/>
+      <line x1="69" y1="147" x2="91" y2="147"/>
+      <line x1="72.2" y1="139.2" x2="87.8" y2="154.8"/>
+      <line x1="72.2" y1="154.8" x2="87.8" y2="139.2"/>
+      <line x1="70.5" y1="142.5" x2="89.5" y2="151.5"/>
+      <line x1="70.5" y1="151.5" x2="89.5" y2="142.5"/>
+      <line x1="75.5" y1="137.5" x2="84.5" y2="156.5"/>
+      <line x1="84.5" y1="137.5" x2="75.5" y2="156.5"/>
+    </g>
+    
+    <!-- Left Horse Figure Symbol -->
+    <path d="M42 148 Q46 142 52 144 Q56 140 60 144 Q57 149 53 151 L55 156 L51 156 L49 152 L45 155 L43 153 Z" fill="#7a5323"/>
+    
+    <!-- Right Bull Figure Symbol -->
+    <path d="M118 148 Q114 142 108 144 Q104 140 100 144 Q103 149 107 151 L105 156 L109 156 L111 152 L115 155 L117 153 Z" fill="#7a5323"/>
+    
+    <!-- Lower Bell Base / Lotus -->
+    <path d="M30 161 Q80 168 130 161 L134 175 Q80 186 26 175 Z" fill="#a4773d"/>
+    <path d="M34 165 C40 178 50 180 56 172 C62 180 72 182 80 174 C88 182 98 180 104 172 C110 180 120 178 126 165" stroke="#7a5323" stroke-width="1.2" fill="none"/>
+    
+    <!-- Bottom Plinth Base -->
+    <rect x="22" y="177" width="116" height="7" rx="2" fill="#845a27"/>
+  </g>
+  
+  <!-- Satyameva Jayate Inscription in Devanagari -->
+  <text x="80" y="204" font-family="'Noto Sans Devanagari', 'Mukta', sans-serif" font-size="14" font-weight="900" text-anchor="middle" fill="#784e1d" letter-spacing="1">सत्यमेव जयते</text>
+</svg>

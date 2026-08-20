@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Block Verified Performance Dashboard</title>
-    <!-- Google Fonts -->
+    <!-- Google Fonts (English & Marathi Devanagari) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- SheetJS (Excel Parser) -->
@@ -18,21 +18,22 @@
     <link rel="stylesheet" href="style.css?v=1.2.4">
 </head>
 <body>
-    <!-- Global Official Government Header (Persistent Across All Pages) -->
+    <!-- Global Official Government Header (Exact Replica of Reference) -->
     <header class="official-portal-header">
         <div class="official-portal-header-left">
-            <img src="maharashtra_logo.png?v=1.2.4" alt="महाराष्ट्र शासन" class="gov-seal-img">
+            <div class="seal-container">
+                <img src="maharashtra_logo.png?v=1.2.4" alt="महाराष्ट्र शासन" class="gov-seal-img">
+                <span class="seal-caption">महाराष्ट्र शासन</span>
+            </div>
             <div class="gov-title-block">
-                <div class="gov-title-mr">मुख्यमंत्री समृद्ध पंचायत राज अभियान</div>
-                <div class="gov-subtitle-mr">ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र</div>
+                <h1 class="gov-title-mr">मुख्यमंत्री समृद्ध पंचायत राज अभियान</h1>
+                <p class="gov-subtitle-mr">ग्रामविकास आणि पंचायत राज विभाग, महाराष्ट्र</p>
             </div>
         </div>
         <div class="official-portal-header-right">
             <div class="gov-emblems-group">
-                <div class="india-emblem-badge">
-                    <i data-lucide="landmark" class="india-emblem-icon"></i>
-                    <span>सत्यमेव जयते</span>
-                </div>
+                <img src="cmspra_logo.svg" alt="CMSPRA Campaign Logo" class="header-emblem-cmspra">
+                <img src="india_emblem.svg" alt="State Emblem of India" class="header-emblem-india">
             </div>
             <div class="gov-royal-bar"></div>
         </div>
