@@ -149,6 +149,26 @@ h1, h2, h3, h4, .logo {
 .official-portal-header-right {
     display: flex;
     align-items: center;
+    gap: 18px;
+    padding-right: 18px;
+}
+
+.gov-emblems-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-emblem-cmspra {
+    height: 58px;
+    width: auto;
+    object-fit: contain;
+}
+
+.header-emblem-india {
+    height: 64px;
+    width: auto;
+    object-fit: contain;
 }
 
 .gov-royal-bar {
