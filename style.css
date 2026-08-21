@@ -1166,9 +1166,105 @@ tr.table-row.open .expand-btn i {
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+    .official-portal-header {
+        height: auto;
+        min-height: 64px;
+        padding: 8px 14px;
+        gap: 8px;
+    }
+
+    .official-portal-header-left {
+        gap: 10px;
+    }
+
+    .gov-seal-img {
+        height: 38px;
+    }
+
+    .seal-caption {
+        font-size: 8.5px;
+    }
+
+    .gov-title-mr {
+        font-size: 15px;
+        line-height: 1.2;
+    }
+
+    .gov-subtitle-mr {
+        font-size: 10.5px;
+    }
+
+    .official-portal-header-right {
+        gap: 8px;
+        padding-right: 12px;
+    }
+
+    .header-emblem-cmspra {
+        height: 36px;
+    }
+
+    .header-emblem-india {
+        height: 40px;
+    }
+
+    .lang-switcher {
+        padding: 2px 4px;
+    }
+
+    .lang-btn {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .landing-page-container {
+        top: 64px;
+        height: calc(100vh - 64px);
+        padding: 20px 16px;
+    }
+
+    .landing-intro h2 {
+        font-size: 20px;
+    }
+
+    .landing-subtitle {
+        font-size: 12px;
+    }
+
+    .landing-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin: 16px 0;
+    }
+
+    .landing-card {
+        padding: 20px;
+    }
+
+    .main-content {
+        padding: 16px;
+    }
+
     .kpi-grid {
         grid-template-columns: 1fr;
+    }
+
+    .search-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .gov-subtitle-mr {
+        display: none;
+    }
+    
+    .gov-title-mr {
+        font-size: 13.5px;
+    }
+
+    .gov-royal-bar {
+        width: 8px;
     }
 }
 
