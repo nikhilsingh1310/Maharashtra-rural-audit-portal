@@ -504,7 +504,7 @@ h1, h2, h3, h4, .logo {
     width: 100%;
 }
 
-.search-icon {
+.search-container .search-icon {
     position: absolute;
     left: 10px;
     top: 50%;
@@ -1169,8 +1169,8 @@ tr.table-row.open .expand-btn i {
 @media (max-width: 768px) {
     .official-portal-header {
         height: auto;
-        min-height: 64px;
-        padding: 8px 14px;
+        min-height: 70px;
+        padding: 10px 14px;
         gap: 8px;
     }
 
@@ -1218,13 +1218,22 @@ tr.table-row.open .expand-btn i {
     }
 
     .landing-page-container {
-        top: 64px;
-        height: calc(100vh - 64px);
-        padding: 20px 16px;
+        padding: 24px 16px 60px;
+        min-height: auto;
+    }
+
+    .landing-content {
+        margin: 0 auto;
+        padding-top: 4px;
+    }
+
+    .landing-intro {
+        margin-bottom: 20px;
     }
 
     .landing-intro h2 {
-        font-size: 20px;
+        font-size: 21px;
+        line-height: 1.3;
     }
 
     .landing-subtitle {
@@ -1238,7 +1247,7 @@ tr.table-row.open .expand-btn i {
     }
 
     .landing-card {
-        padding: 20px;
+        padding: 24px 20px;
     }
 
     .main-content {
@@ -1255,6 +1264,15 @@ tr.table-row.open .expand-btn i {
 }
 
 @media (max-width: 480px) {
+    .official-portal-header {
+        min-height: 64px;
+        padding: 8px 10px;
+    }
+
+    .landing-page-container {
+        padding: 20px 12px 60px;
+    }
+
     .gov-subtitle-mr {
         display: none;
     }
@@ -1265,6 +1283,14 @@ tr.table-row.open .expand-btn i {
 
     .gov-royal-bar {
         width: 8px;
+    }
+
+    .landing-intro h2 {
+        font-size: 18px;
+    }
+
+    .landing-card {
+        padding: 20px 16px;
     }
 }
 
@@ -1601,37 +1627,32 @@ tr.table-row.open .expand-btn i {
 
 /* Landing Page Styles */
 .landing-page-container {
-    position: fixed;
-    top: 88px;
-    left: 0;
-    width: 100vw;
-    height: calc(100vh - 88px);
+    width: 100%;
+    flex: 1;
+    min-height: calc(100vh - 88px);
     background: radial-gradient(circle at 10% 20%, rgba(240, 244, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 100;
-    overflow-y: auto;
-    padding: 32px 24px;
-    transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+    padding: 36px 24px 60px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 1;
     transform: scale(1);
-    visibility: visible;
 }
 
 .landing-page-container.fade-out {
-    opacity: 0;
-    transform: scale(1.02);
-    visibility: hidden;
+    display: none !important;
 }
 
 .landing-content {
     width: 100%;
     max-width: 980px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .landing-intro {
@@ -1737,6 +1758,8 @@ tr.table-row.open .expand-btn i {
     align-items: center;
     margin-bottom: 24px;
     transition: var(--transition-smooth);
+    position: static;
+    transform: none;
 }
 
 .card-icon-wrapper i {
@@ -1750,7 +1773,7 @@ tr.table-row.open .expand-btn i {
     box-shadow: 0 4px 10px rgba(11, 87, 157, 0.1);
 }
 
-.search-icon {
+.landing-search-icon {
     background: #ffffff;
     color: var(--success);
     box-shadow: 0 4px 10px rgba(40, 167, 69, 0.1);
@@ -1761,7 +1784,7 @@ tr.table-row.open .expand-btn i {
     color: #ffffff;
 }
 
-.landing-card:hover .search-icon {
+.landing-card:hover .landing-search-icon {
     background: var(--success);
     color: #ffffff;
 }
