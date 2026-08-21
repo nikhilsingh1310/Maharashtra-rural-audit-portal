@@ -132,6 +132,7 @@ function initSearchEventListeners() {
         searchType = searchTypeSelect.value;
         searchTextField.value = '';
         selectedCodeVal = 'all';
+        updateSearchPlaceholders();
         populateCodeDropdown();
         executeSearch();
     });
@@ -354,6 +355,18 @@ function populateDistrictDropdown() {
     });
     
     searchDistrictSelect.value = selectedDistrictVal;
+}
+
+// Update placeholder text on manual code search input based on active Search Type
+function updateSearchPlaceholders() {
+    const isMr = (window.getCurrentPortalLanguage && window.getCurrentPortalLanguage() === 'mr') || document.documentElement.lang === 'mr';
+    if (searchType === 'BDOCode') {
+        searchTextField.placeholder = isMr ? 'बीडीओ कोड किंवा तालुका नाव शोधा...' : 'Type BDO Code or Block name...';
+    } else if (searchType === 'GPLGDCode') {
+        searchTextField.placeholder = isMr ? 'जीपी एलजीडी कोड किंवा ग्रामपंचायत नाव शोधा...' : 'Type GP LGD Code or GP name...';
+    } else {
+        searchTextField.placeholder = isMr ? 'एलजीडी कोड, ग्रामपंचायत, तालुका किंवा जिल्हा शोधा...' : 'Type LGD Code, GP, Taluka, or District...';
+    }
 }
 
 // Populate the dynamic code picker list based on Search Type
@@ -1101,8 +1114,9 @@ function showSearchLoading(active) {
     }
 }
 
-// Re-render search tables when language changes
+// Re-render search tables and update placeholders when language changes
 window.addEventListener('portalLanguageChanged', () => {
+    updateSearchPlaceholders();
     if (searchFilteredGp && searchFilteredGp.length > 0) {
         renderGpTable();
     }
@@ -1110,4 +1124,5 @@ window.addEventListener('portalLanguageChanged', () => {
         renderBdoTable();
     }
 });
+
 
