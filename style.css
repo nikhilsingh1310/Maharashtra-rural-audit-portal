@@ -884,6 +884,116 @@ h1, h2, h3, h4, .logo {
     color: var(--primary);
 }
 
+/* Division Filter in Table Toolbar */
+.division-toolbar-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 3px 8px 3px 12px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid rgba(0, 42, 84, 0.12);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.division-toolbar-filter label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.division-toolbar-filter .select-input {
+    min-width: 170px;
+    height: 32px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: var(--primary);
+}
+
+/* District Quick-Filter Pills Container */
+.district-pills-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background: rgba(0, 42, 84, 0.025);
+    border: 1px solid rgba(0, 42, 84, 0.08);
+    border-radius: var(--border-radius-md);
+    margin-bottom: 18px;
+    transition: var(--transition-smooth);
+}
+
+.district-pill-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.district-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: #ffffff;
+    border: 1px solid rgba(0, 42, 84, 0.14);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    user-select: none;
+}
+
+.district-pill:hover {
+    color: var(--primary);
+    background: #f8fafc;
+    border-color: var(--primary-light, #2563eb);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 42, 84, 0.08);
+}
+
+.district-pill.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, #002a54 0%, #1e3a8a 100%);
+    border-color: #002a54;
+    box-shadow: 0 3px 8px rgba(0, 42, 84, 0.25);
+    transform: translateY(-1px);
+}
+
+.district-pill-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 10px;
+    background: rgba(0, 42, 84, 0.08);
+    color: var(--text-secondary);
+    transition: var(--transition-smooth);
+}
+
+.district-pill.active .district-pill-count {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
 .table-container {
     width: 100%;
     overflow-x: auto;

@@ -28,9 +28,11 @@ const thresholdVal = document.getElementById('threshold-val');
 const maxAwardsSlider = document.getElementById('max-awards-slider');
 const maxAwardsVal = document.getElementById('max-awards-val');
 const aggMethodSelect = document.getElementById('agg-method');
-const divisionSelect = document.getElementById('division-select'); // New division dropdown
+const divisionSelect = document.getElementById('division-select'); // Sidebar division dropdown
+const tableDivisionSelect = document.getElementById('table-division-select'); // Table toolbar division dropdown
 const districtSelect = document.getElementById('district-select');
 const blockSelect = document.getElementById('block-select'); // Block dropdown
+const districtPillsContainer = document.getElementById('district-pills-container'); // District quick-pills bar
 const searchInput = document.getElementById('search-input');
 const exportCsvBtn = document.getElementById('export-csv');
 const resetParamsBtn = document.getElementById('reset-params');
@@ -146,34 +148,48 @@ function initEventListeners() {
     // Dropdowns & Inputs
     aggMethodSelect.addEventListener('change', processData);
     
-    // Dynamic Division dropdown listener
+    // Division change handler synced between sidebar and table toolbar
+    function handleDivisionChange(newDivision) {
+        if (divisionSelect && divisionSelect.value !== newDivision) divisionSelect.value = newDivision;
+        if (tableDivisionSelect && tableDivisionSelect.value !== newDivision) tableDivisionSelect.value = newDivision;
+        
+        // Re-populate District dropdown based on selected division
+        districtSelect.innerHTML = '<option value="all" data-i18n="opt_all_districts">All Districts</option>';
+        
+        let filteredByDivision = parsedBlocks;
+        if (newDivision !== 'all') {
+            filteredByDivision = parsedBlocks.filter(b => b.division === newDivision);
+        }
+        
+        const uniqueDistricts = Array.from(new Set(filteredByDivision.map(b => b.district))).sort();
+        uniqueDistricts.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d;
+            opt.textContent = d;
+            districtSelect.appendChild(opt);
+        });
+        districtSelect.value = 'all';
+        
+        // Reset block dropdown
+        blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
+        blockSelect.value = 'all';
+        blockSelect.disabled = true;
+        
+        renderDistrictPills();
+        filterAndRender();
+    }
+
+    // Dynamic Division dropdown listener (Sidebar)
     if (divisionSelect) {
         divisionSelect.addEventListener('change', () => {
-            const selectedDivision = divisionSelect.value;
-            
-            // Re-populate District dropdown based on selected division
-            districtSelect.innerHTML = '<option value="all">All Districts</option>';
-            
-            let filteredByDivision = parsedBlocks;
-            if (selectedDivision !== 'all') {
-                filteredByDivision = parsedBlocks.filter(b => b.division === selectedDivision);
-            }
-            
-            const uniqueDistricts = Array.from(new Set(filteredByDivision.map(b => b.district))).sort();
-            uniqueDistricts.forEach(d => {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d;
-                districtSelect.appendChild(opt);
-            });
-            districtSelect.value = 'all';
-            
-            // Reset block dropdown
-            blockSelect.innerHTML = '<option value="all">All Blocks</option>';
-            blockSelect.value = 'all';
-            blockSelect.disabled = true;
-            
-            filterAndRender();
+            handleDivisionChange(divisionSelect.value);
+        });
+    }
+
+    // Dynamic Division dropdown listener (Table Toolbar)
+    if (tableDivisionSelect) {
+        tableDivisionSelect.addEventListener('change', () => {
+            handleDivisionChange(tableDivisionSelect.value);
         });
     }
 
@@ -183,12 +199,12 @@ function initEventListeners() {
         const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
         
         if (selectedDistrict === 'all') {
-            blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+            blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
             blockSelect.value = 'all';
             blockSelect.disabled = true;
         } else {
             blockSelect.disabled = false;
-            blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+            blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
             
             // Filter unique blocks in the selected district
             let blocksInSelected = parsedBlocks.filter(b => b.district === selectedDistrict);
@@ -206,6 +222,7 @@ function initEventListeners() {
             
             blockSelect.value = 'all';
         }
+        renderDistrictPills();
         filterAndRender();
     });
 
@@ -283,9 +300,10 @@ function resetParameters() {
     maxAwardsVal.innerText = '5';
     aggMethodSelect.value = 'mean';
     if (divisionSelect) divisionSelect.value = 'all';
+    if (tableDivisionSelect) tableDivisionSelect.value = 'all';
     districtSelect.value = 'all';
     
-    blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+    blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
     blockSelect.value = 'all';
     blockSelect.disabled = true;
     
@@ -344,8 +362,9 @@ function handleFile(file) {
             
             // Reset filters on new file load
             if (divisionSelect) divisionSelect.value = 'all';
+            if (tableDivisionSelect) tableDivisionSelect.value = 'all';
             districtSelect.value = 'all';
-            blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+            blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
             blockSelect.value = 'all';
             blockSelect.disabled = true;
             searchInput.value = '';
@@ -469,28 +488,30 @@ function processData() {
 
             parsedBlocks = allProcessedBlocks;
 
-            // 1. Populate Division Dropdown
+            // 1. Populate Division Dropdowns (both sidebar and table toolbar)
             const currentSelectedDivision = divisionSelect ? divisionSelect.value : 'all';
-            if (divisionSelect) {
-                divisionSelect.innerHTML = '<option value="all">All Divisions</option>';
-                const uniqueDivisions = Array.from(new Set(allProcessedBlocks.map(b => b.division).filter(Boolean))).sort();
+            const uniqueDivisions = Array.from(new Set(allProcessedBlocks.map(b => b.division).filter(Boolean))).sort();
+            
+            [divisionSelect, tableDivisionSelect].forEach(sel => {
+                if (!sel) return;
+                sel.innerHTML = '<option value="all" data-i18n="opt_all_divisions">All Divisions</option>';
                 uniqueDivisions.forEach(div => {
                     const opt = document.createElement('option');
                     opt.value = div;
                     opt.textContent = div;
-                    divisionSelect.appendChild(opt);
+                    sel.appendChild(opt);
                 });
                 if (uniqueDivisions.includes(currentSelectedDivision)) {
-                    divisionSelect.value = currentSelectedDivision;
+                    sel.value = currentSelectedDivision;
                 } else {
-                    divisionSelect.value = 'all';
+                    sel.value = 'all';
                 }
-            }
+            });
 
             // 2. Populate District Dropdown based on active division selection
             const activeDivision = divisionSelect ? divisionSelect.value : 'all';
             const currentSelectedDistrict = districtSelect.value;
-            districtSelect.innerHTML = '<option value="all">All Districts</option>';
+            districtSelect.innerHTML = '<option value="all" data-i18n="opt_all_districts">All Districts</option>';
             
             let eligibleBlocksForDistricts = allProcessedBlocks;
             if (activeDivision !== 'all') {
@@ -509,7 +530,7 @@ function processData() {
                 districtSelect.value = currentSelectedDistrict;
                 blockSelect.disabled = false;
                 const prevBlockVal = blockSelect.value;
-                blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+                blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
                 
                 let blocksInSelectedDistrict = parsedBlocks.filter(b => b.district === currentSelectedDistrict);
                 if (activeDivision !== 'all') {
@@ -530,11 +551,12 @@ function processData() {
                 }
             } else {
                 districtSelect.value = 'all';
-                blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+                blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
                 blockSelect.value = 'all';
                 blockSelect.disabled = true;
             }
 
+            renderDistrictPills();
             filterAndRender();
         } catch (error) {
             console.error("Error processing Excel workbook:", error);
@@ -1202,11 +1224,92 @@ function renderDistrictLeaders() {
     lucide.createIcons();
 }
 
+// Render Interactive District Quick-Filter Pills above Table
+function renderDistrictPills() {
+    if (!districtPillsContainer) return;
+    
+    districtPillsContainer.innerHTML = '';
+    
+    if (!parsedBlocks || parsedBlocks.length === 0) {
+        districtPillsContainer.style.display = 'none';
+        return;
+    }
+    
+    districtPillsContainer.style.display = 'flex';
+    
+    const isMr = window.i18n && window.i18n.getCurrent() === 'mr';
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
+    const currentSelectedDistrict = districtSelect ? districtSelect.value : 'all';
+    
+    // Filter blocks by active division
+    let divisionScopedBlocks = parsedBlocks;
+    if (selectedDivision !== 'all') {
+        divisionScopedBlocks = parsedBlocks.filter(b => b.division === selectedDivision);
+    }
+    
+    // Calculate total blocks in this division scope
+    const totalBlocksCount = divisionScopedBlocks.length;
+    
+    // Group block count by district
+    const districtCounts = {};
+    divisionScopedBlocks.forEach(b => {
+        districtCounts[b.district] = (districtCounts[b.district] || 0) + 1;
+    });
+    
+    const sortedDistricts = Object.keys(districtCounts).sort();
+    
+    // 1. Add Label / Tag
+    const labelSpan = document.createElement('span');
+    labelSpan.className = 'district-pill-label';
+    const labelText = isMr ? 'विभागातील जिल्हे:' : 'Districts:';
+    labelSpan.innerHTML = `<i data-lucide="map-pin" style="width: 14px; height: 14px;"></i> ${labelText}`;
+    districtPillsContainer.appendChild(labelSpan);
+    
+    // 2. "All Districts" Pill
+    const allPill = document.createElement('button');
+    allPill.type = 'button';
+    allPill.className = `district-pill ${currentSelectedDistrict === 'all' ? 'active' : ''}`;
+    const allLabel = isMr ? 'सर्व जिल्हे' : 'All Districts';
+    allPill.innerHTML = `<span>${allLabel}</span> <span class="district-pill-count">${totalBlocksCount}</span>`;
+    
+    allPill.addEventListener('click', () => {
+        if (districtSelect.value !== 'all') {
+            districtSelect.value = 'all';
+            districtSelect.dispatchEvent(new Event('change'));
+        }
+    });
+    districtPillsContainer.appendChild(allPill);
+    
+    // 3. Individual District Pills for the active Division
+    sortedDistricts.forEach(distName => {
+        const count = districtCounts[distName];
+        const pill = document.createElement('button');
+        pill.type = 'button';
+        pill.className = `district-pill ${currentSelectedDistrict === distName ? 'active' : ''}`;
+        pill.innerHTML = `<span>${distName}</span> <span class="district-pill-count">${count}</span>`;
+        
+        pill.addEventListener('click', () => {
+            if (districtSelect.value === distName) {
+                districtSelect.value = 'all';
+            } else {
+                districtSelect.value = distName;
+            }
+            districtSelect.dispatchEvent(new Event('change'));
+        });
+        
+        districtPillsContainer.appendChild(pill);
+    });
+    
+    lucide.createIcons();
+}
+
 // Re-render components when language is toggled
 window.addEventListener('portalLanguageChanged', () => {
+    renderDistrictPills();
     if (filteredBlocks && filteredBlocks.length > 0) {
         renderTable();
         renderDistrictLeaders();
     }
 });
+
 

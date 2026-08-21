@@ -394,14 +394,28 @@
                     <section class="table-section glass">
                         <div class="table-header">
                             <div class="table-header-left">
-                                <h2>Detailed Block Shortlist & Rankings</h2>
+                                <h2 data-i18n="table_title">Detailed Block Shortlist & Rankings</h2>
                                 <p class="table-subtitle">Showing aggregated performance details and district rankings</p>
                             </div>
-                            <div class="table-header-right">
+                            <div class="table-header-right" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                                <div class="division-toolbar-filter">
+                                    <label for="table-division-select">
+                                        <i data-lucide="map-pin" style="width: 14px; height: 14px; color: var(--primary);"></i>
+                                        <span data-i18n="lbl_division_filter">Division:</span>
+                                    </label>
+                                    <select id="table-division-select" class="select-input">
+                                        <option value="all" data-i18n="opt_all_divisions">All Divisions</option>
+                                    </select>
+                                </div>
                                 <div class="table-summary-text">
                                     Showing <span id="table-showing-count">0</span> blocks
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Interactive District Quick-Pills Row -->
+                        <div id="district-pills-container" class="district-pills-container">
+                            <!-- Populated dynamically by app.js -->
                         </div>
 
                         <div class="table-container">
