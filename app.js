@@ -151,37 +151,6 @@ function initEventListeners() {
     // Dropdowns & Inputs
     aggMethodSelect.addEventListener('change', processData);
     
-    // Division change handler synced between sidebar and table toolbar
-    function handleDivisionChange(newDivision) {
-        if (divisionSelect && divisionSelect.value !== newDivision) divisionSelect.value = newDivision;
-        if (tableDivisionSelect && tableDivisionSelect.value !== newDivision) tableDivisionSelect.value = newDivision;
-        
-        // Re-populate District dropdown based on selected division
-        districtSelect.innerHTML = '<option value="all" data-i18n="opt_all_districts">All Districts</option>';
-        
-        let filteredByDivision = parsedBlocks;
-        if (newDivision !== 'all') {
-            filteredByDivision = parsedBlocks.filter(b => b.division === newDivision);
-        }
-        
-        const uniqueDistricts = Array.from(new Set(filteredByDivision.map(b => b.district))).sort();
-        uniqueDistricts.forEach(d => {
-            const opt = document.createElement('option');
-            opt.value = d;
-            opt.textContent = d;
-            districtSelect.appendChild(opt);
-        });
-        districtSelect.value = 'all';
-        
-        // Reset block dropdown
-        blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
-        blockSelect.value = 'all';
-        blockSelect.disabled = true;
-        
-        renderDistrictPills();
-        filterAndRender();
-    }
-
     // Dynamic Division dropdown listener (Sidebar)
     if (divisionSelect) {
         divisionSelect.addEventListener('change', () => {
@@ -314,6 +283,37 @@ function initEventListeners() {
             handleFile(e.dataTransfer.files[0]);
         }
     });
+}
+
+// Division change handler synced between sidebar and table toolbar (Global / Top-level Scope)
+function handleDivisionChange(newDivision) {
+    if (divisionSelect && divisionSelect.value !== newDivision) divisionSelect.value = newDivision;
+    if (tableDivisionSelect && tableDivisionSelect.value !== newDivision) tableDivisionSelect.value = newDivision;
+    
+    // Re-populate District dropdown based on selected division
+    districtSelect.innerHTML = '<option value="all" data-i18n="opt_all_districts">All Districts</option>';
+    
+    let filteredByDivision = parsedBlocks;
+    if (newDivision !== 'all') {
+        filteredByDivision = parsedBlocks.filter(b => b.division === newDivision);
+    }
+    
+    const uniqueDistricts = Array.from(new Set(filteredByDivision.map(b => b.district))).sort();
+    uniqueDistricts.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        districtSelect.appendChild(opt);
+    });
+    districtSelect.value = 'all';
+    
+    // Reset block dropdown
+    blockSelect.innerHTML = '<option value="all" data-i18n="opt_all_blocks">All Blocks</option>';
+    blockSelect.value = 'all';
+    blockSelect.disabled = true;
+    
+    renderDistrictPills();
+    filterAndRender();
 }
 
 // Reset UI configuration to default
@@ -955,6 +955,7 @@ function renderTable() {
         districtSummaries.forEach((dist, idx) => {
             const tr = document.createElement('tr');
             tr.className = 'table-row clickable';
+            tr.style.cursor = 'pointer';
             
             const rankBadge = `<span class="rank-badge ${idx < 3 ? 'top-rank' : 'other-rank'}">${idx + 1}</span>`;
             
@@ -967,16 +968,21 @@ function renderTable() {
                 <td class="text-center"><span class="badge badge-gold"><i data-lucide="award"></i> ${dist.awardedBlocks}</span></td>
                 <td class="text-center" style="font-weight: 600; color: var(--primary);">${dist.topBlockName} (${dist.topBlockScore.toFixed(2)}%)</td>
                 <td class="text-center">
-                    <button class="drilldown-btn" title="View Blocks">
+                    <button class="drilldown-btn" type="button" title="View Blocks">
                         <span>${isMr ? 'तालुके पहा' : 'View Blocks'}</span> <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
                     </button>
                 </td>
             `;
 
-            tr.addEventListener('click', () => {
+            const goToDistrict = (e) => {
+                if (e) e.stopPropagation();
                 districtSelect.value = dist.district;
                 districtSelect.dispatchEvent(new Event('change'));
-            });
+            };
+
+            tr.addEventListener('click', goToDistrict);
+            const btn = tr.querySelector('.drilldown-btn');
+            if (btn) btn.addEventListener('click', goToDistrict);
 
             tableBody.appendChild(tr);
         });
@@ -1031,6 +1037,7 @@ function renderTable() {
     divisionSummaries.forEach((div, idx) => {
         const tr = document.createElement('tr');
         tr.className = 'table-row clickable';
+        tr.style.cursor = 'pointer';
         
         const rankBadge = `<span class="rank-badge ${idx < 3 ? 'top-rank' : 'other-rank'}">${idx + 1}</span>`;
         
@@ -1048,15 +1055,20 @@ function renderTable() {
                 ${div.avgScore.toFixed(2)}%
             </td>
             <td class="text-center">
-                <button class="drilldown-btn" title="View Districts">
+                <button class="drilldown-btn" type="button" title="View Districts">
                     <span>${isMr ? 'जिल्हे पहा' : 'View Districts'}</span> <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
                 </button>
             </td>
         `;
 
-        tr.addEventListener('click', () => {
+        const goToDivision = (e) => {
+            if (e) e.stopPropagation();
             handleDivisionChange(div.division);
-        });
+        };
+
+        tr.addEventListener('click', goToDivision);
+        const btn = tr.querySelector('.drilldown-btn');
+        if (btn) btn.addEventListener('click', goToDivision);
 
         tableBody.appendChild(tr);
     });
