@@ -212,7 +212,7 @@
                         </div>
                         <div class="current-file-badge">
                             <i data-lucide="file-spreadsheet"></i>
-                            <span id="search-current-file-name" title="Report GP and BDO 20.08.2026.xlsx">Report GP and BDO 20.08.2026.xlsx</span>
+                            <span id="search-current-file-name" title="Report GP and BDO 09.06.2025.xlsx">Report GP and BDO 09.06.2025.xlsx</span>
                         </div>
                     </div>
 
@@ -447,19 +447,7 @@
                         <i data-lucide="search" style="color: var(--primary); width: 20px; height: 20px;"></i>
                         <span data-i18n="search_box_title">डेटाबेस शोधा</span>
                     </h3>
-                    <div class="search-form-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap: 16px; align-items: flex-end;">
-                        <div class="parameter-group">
-                            <label class="parameter-label" for="search-division-select" data-i18n="lbl_division">विभाग निवडा</label>
-                            <select id="search-division-select" class="select-input">
-                                <option value="all" data-i18n="opt_all_divisions">सर्व महसूल विभाग</option>
-                            </select>
-                        </div>
-                        <div class="parameter-group">
-                            <label class="parameter-label" for="search-district-select" data-i18n="lbl_district">जिल्हा निवडा</label>
-                            <select id="search-district-select" class="select-input">
-                                <option value="all" data-i18n="opt_all_districts">सर्व जिल्हे</option>
-                            </select>
-                        </div>
+                    <div class="search-form-grid" style="display: flex; flex-direction: column; gap: 16px;">
                         <div class="parameter-group">
                             <label class="parameter-label" for="search-type-select" data-i18n="lbl_search_type">शोध प्रकार</label>
                             <select id="search-type-select" class="select-input">
@@ -480,7 +468,7 @@
                                 <input type="text" id="search-text-input" placeholder="कोड शोधा..." class="search-input-field">
                             </div>
                         </div>
-                        <div style="display: flex; gap: 12px; margin-top: 10px;">
+                        <div style="display: flex; gap: 12px; margin-top: 4px;">
                             <button id="search-submit-btn" class="btn" style="background: var(--primary); color: white;">
                                 <i data-lucide="search"></i> <span data-i18n="btn_search">शोधा</span>
                             </button>

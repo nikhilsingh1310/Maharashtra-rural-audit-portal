@@ -86,15 +86,15 @@ function initSearchPortal() {
 async function loadDefaultSearchFile() {
     showSearchLoading(true);
     try {
-        const response = await fetch('./Report GP and BDO 20.08.2026.xlsx');
+        const response = await fetch('./Report GP and BDO 09.06.2025.xlsx');
         if (!response.ok) {
             throw new Error(`Failed to load default file: ${response.statusText}`);
         }
         const data = await response.arrayBuffer();
-        parseSearchWorkbook(data, 'Report GP and BDO 20.08.2026.xlsx');
+        parseSearchWorkbook(data, 'Report GP and BDO 09.06.2025.xlsx');
     } catch (error) {
         console.error("Error loading default search spreadsheet:", error);
-        alert("Could not load default Report GP and BDO 20.08.2026.xlsx spreadsheet automatically. Please upload manually.");
+        alert("Could not load default Report GP and BDO 09.06.2025.xlsx spreadsheet automatically. Please upload manually.");
         showSearchLoading(false);
     }
 }
@@ -356,31 +356,18 @@ function populateDistrictDropdown() {
     searchDistrictSelect.value = selectedDistrictVal;
 }
 
-// Populate the dynamic code picker list based on selected Division, District, and Search Type
+// Populate the dynamic code picker list based on Search Type
 function populateCodeDropdown() {
     searchCodeSelect.innerHTML = '<option value="all">All Codes</option>';
-    
-    let bdoFiltered = searchBdoData;
-    let gpFiltered = searchGpData;
-    
-    if (selectedDivisionVal !== 'all') {
-        bdoFiltered = bdoFiltered.filter(r => r.Division === selectedDivisionVal);
-        gpFiltered = gpFiltered.filter(r => r.Division === selectedDivisionVal);
-    }
-    
-    if (selectedDistrictVal !== 'all') {
-        bdoFiltered = bdoFiltered.filter(r => r.District === selectedDistrictVal);
-        gpFiltered = gpFiltered.filter(r => r.District === selectedDistrictVal);
-    }
     
     let uniqueCodes = [];
     
     if (searchType === 'BDOCode') {
-        uniqueCodes = Array.from(new Set(bdoFiltered.map(r => r.BDOCode).filter(Boolean))).sort((a, b) => a - b);
+        uniqueCodes = Array.from(new Set(searchBdoData.map(r => r.BDOCode).filter(Boolean))).sort((a, b) => a - b);
     } else {
         uniqueCodes = Array.from(new Set([
-            ...bdoFiltered.map(r => r['GP LGDCode']),
-            ...gpFiltered.map(r => r['GP LGDCode'])
+            ...searchBdoData.map(r => r['GP LGDCode']),
+            ...searchGpData.map(r => r['GP LGDCode'])
         ].filter(Boolean))).sort((a, b) => a - b);
     }
     
@@ -396,16 +383,12 @@ function populateCodeDropdown() {
 
 // Reset filters to defaults
 function resetSearchFilters() {
-    selectedDivisionVal = 'all';
-    selectedDistrictVal = 'all';
     searchTypeSelect.value = 'GPLGDCode';
     searchType = 'GPLGDCode';
     
     searchTextField.value = '';
     searchInputText = '';
     
-    populateDivisionDropdown();
-    populateDistrictDropdown();
     populateCodeDropdown();
     
     searchCodeSelect.value = 'all';
@@ -425,21 +408,10 @@ function executeSearch() {
             let finalBdoMatches = [];
             let finalGpMatches = [];
             
-            // First step: Filter datasets by active Division and District selection
             let poolBdo = searchBdoData;
             let poolGp = searchGpData;
             
-            if (selectedDivisionVal !== 'all') {
-                poolBdo = poolBdo.filter(r => r.Division === selectedDivisionVal);
-                poolGp = poolGp.filter(r => r.Division === selectedDivisionVal);
-            }
-            
-            if (selectedDistrictVal !== 'all') {
-                poolBdo = poolBdo.filter(r => r.District === selectedDistrictVal);
-                poolGp = poolGp.filter(r => r.District === selectedDistrictVal);
-            }
-            
-            // Check if we are searching "all" records within the selected Division/District
+            // Check if we are searching "all" records
             const isAllQuery = selectedCodeVal === 'all' && searchInputText === '';
             
             if (isAllQuery) {
