@@ -7,6 +7,18 @@ let districtChart = null; // ApexCharts instances
 let topBlocksChart = null;
 let districtLeadersSearchText = '';
 
+// Official Maharashtra 34 Districts to 6 Administrative Divisions Mapping
+const DISTRICT_TO_DIVISION = {
+    'Palghar': 'Konkan', 'Thane': 'Konkan', 'Raigad': 'Konkan', 'Ratnagiri': 'Konkan', 'Sindhudurg': 'Konkan',
+    'Pune': 'Pune', 'Satara': 'Pune', 'Sangli': 'Pune', 'Solapur': 'Pune', 'Kolhapur': 'Pune',
+    'Nashik': 'Nashik', 'Dhule': 'Nashik', 'Nandurbar': 'Nashik', 'Jalgaon': 'Nashik', 'Ahilyanagar': 'Nashik',
+    'Chh.Sambhajinagar': 'Chhatrapati Sambhajinagar', 'Jalna': 'Chhatrapati Sambhajinagar', 'Parbhani': 'Chhatrapati Sambhajinagar',
+    'Hingoli': 'Chhatrapati Sambhajinagar', 'Nanded': 'Chhatrapati Sambhajinagar', 'Beed': 'Chhatrapati Sambhajinagar',
+    'Latur': 'Chhatrapati Sambhajinagar', 'Dharashiv': 'Chhatrapati Sambhajinagar',
+    'Amravati': 'Amravati', 'Akola': 'Amravati', 'Buldhana': 'Amravati', 'Washim': 'Amravati', 'Yavatmal': 'Amravati',
+    'Nagpur': 'Nagpur', 'Wardha': 'Nagpur', 'Bhandara': 'Nagpur', 'Gondia': 'Nagpur', 'Chandrapur': 'Nagpur', 'Gadchiroli': 'Nagpur'
+};
+
 // DOM Elements
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -16,8 +28,9 @@ const thresholdVal = document.getElementById('threshold-val');
 const maxAwardsSlider = document.getElementById('max-awards-slider');
 const maxAwardsVal = document.getElementById('max-awards-val');
 const aggMethodSelect = document.getElementById('agg-method');
+const divisionSelect = document.getElementById('division-select'); // New division dropdown
 const districtSelect = document.getElementById('district-select');
-const blockSelect = document.getElementById('block-select'); // New block dropdown
+const blockSelect = document.getElementById('block-select'); // Block dropdown
 const searchInput = document.getElementById('search-input');
 const exportCsvBtn = document.getElementById('export-csv');
 const resetParamsBtn = document.getElementById('reset-params');
@@ -133,9 +146,41 @@ function initEventListeners() {
     // Dropdowns & Inputs
     aggMethodSelect.addEventListener('change', processData);
     
+    // Dynamic Division dropdown listener
+    if (divisionSelect) {
+        divisionSelect.addEventListener('change', () => {
+            const selectedDivision = divisionSelect.value;
+            
+            // Re-populate District dropdown based on selected division
+            districtSelect.innerHTML = '<option value="all">All Districts</option>';
+            
+            let filteredByDivision = parsedBlocks;
+            if (selectedDivision !== 'all') {
+                filteredByDivision = parsedBlocks.filter(b => b.division === selectedDivision);
+            }
+            
+            const uniqueDistricts = Array.from(new Set(filteredByDivision.map(b => b.district))).sort();
+            uniqueDistricts.forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d;
+                districtSelect.appendChild(opt);
+            });
+            districtSelect.value = 'all';
+            
+            // Reset block dropdown
+            blockSelect.innerHTML = '<option value="all">All Blocks</option>';
+            blockSelect.value = 'all';
+            blockSelect.disabled = true;
+            
+            filterAndRender();
+        });
+    }
+
     // Dynamic District dropdown listener
     districtSelect.addEventListener('change', () => {
         const selectedDistrict = districtSelect.value;
+        const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
         
         if (selectedDistrict === 'all') {
             blockSelect.innerHTML = '<option value="all">All Blocks</option>';
@@ -146,8 +191,11 @@ function initEventListeners() {
             blockSelect.innerHTML = '<option value="all">All Blocks</option>';
             
             // Filter unique blocks in the selected district
-            const blocksInSelectedDistrict = parsedBlocks.filter(b => b.district === selectedDistrict);
-            const uniqueBlocks = Array.from(new Set(blocksInSelectedDistrict.map(b => b.block))).sort();
+            let blocksInSelected = parsedBlocks.filter(b => b.district === selectedDistrict);
+            if (selectedDivision !== 'all') {
+                blocksInSelected = blocksInSelected.filter(b => b.division === selectedDivision);
+            }
+            const uniqueBlocks = Array.from(new Set(blocksInSelected.map(b => b.block))).sort();
             
             uniqueBlocks.forEach(block => {
                 const opt = document.createElement('option');
@@ -234,6 +282,7 @@ function resetParameters() {
     maxAwardsSlider.value = 5;
     maxAwardsVal.innerText = '5';
     aggMethodSelect.value = 'mean';
+    if (divisionSelect) divisionSelect.value = 'all';
     districtSelect.value = 'all';
     
     blockSelect.innerHTML = '<option value="all">All Blocks</option>';
@@ -256,20 +305,20 @@ function resetParameters() {
 async function loadDefaultFile() {
     showLoading(true);
     try {
-        const response = await fetch('./29.05.2026.xlsx');
+        const response = await fetch('./29.05.2026_with_Division.xlsx');
         if (!response.ok) {
             throw new Error(`Failed to load default file: ${response.statusText}`);
         }
         const data = await response.arrayBuffer();
         const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
         rawWorkbookData = workbook;
-        currentFileName.innerText = '29.05.2026.xlsx';
-        currentFileName.setAttribute('title', '29.05.2026.xlsx');
+        currentFileName.innerText = '29.05.2026_with_Division.xlsx';
+        currentFileName.setAttribute('title', '29.05.2026_with_Division.xlsx');
         
         processData();
     } catch (error) {
         console.error("Error loading Excel file:", error);
-        alert("Could not load default 29.05.2026.xlsx file automatically. Please upload manually.");
+        alert("Could not load default 29.05.2026_with_Division.xlsx file automatically. Please upload manually.");
         showLoading(false);
     }
 }
@@ -294,6 +343,7 @@ function handleFile(file) {
             currentFileName.setAttribute('title', file.name);
             
             // Reset filters on new file load
+            if (divisionSelect) divisionSelect.value = 'all';
             districtSelect.value = 'all';
             blockSelect.innerHTML = '<option value="all">All Blocks</option>';
             blockSelect.value = 'all';
@@ -325,9 +375,10 @@ function processData() {
             const districtMap = {};
             
             rawRows.forEach(row => {
-                const district = (row['DISTRICT VIRIFIED'] || row['DISTRICT VERIFIED'] || '').toString().trim();
-                const block = (row['BLOCK VERIFIED'] || '').toString().trim();
-                const gp = (row['GrampanchayatName'] || '').toString().trim();
+                const district = (row['DISTRICT VIRIFIED'] || row['DISTRICT VERIFIED'] || row['District'] || '').toString().trim();
+                const block = (row['BLOCK VERIFIED'] || row['Block'] || '').toString().trim();
+                const division = (row['Division'] || row['DIVISION'] || DISTRICT_TO_DIVISION[district] || '').toString().trim();
+                const gp = (row['GrampanchayatName'] || row['GP'] || '').toString().trim();
                 const totalMarks = parseFloat(row['TotalMarks']) || 0;
                 const totalOutOf = parseFloat(row['TotalOutOfMarks']) || 0;
                 const pct = parseFloat(row['Percentage']) || 0;
@@ -339,6 +390,7 @@ function processData() {
                 }
                 if (!districtMap[district][block]) {
                     districtMap[district][block] = {
+                        division: division,
                         district: district,
                         block: block,
                         gpList: []
@@ -387,6 +439,7 @@ function processData() {
                     score = Math.round(score * 100) / 100;
                     
                     blocksInDistrict.push({
+                        division: blockObj.division,
                         district: blockObj.district,
                         block: blockObj.block,
                         score: score,
@@ -416,11 +469,35 @@ function processData() {
 
             parsedBlocks = allProcessedBlocks;
 
-            // Populate District Dropdown (preserving selections if still valid)
+            // 1. Populate Division Dropdown
+            const currentSelectedDivision = divisionSelect ? divisionSelect.value : 'all';
+            if (divisionSelect) {
+                divisionSelect.innerHTML = '<option value="all">All Divisions</option>';
+                const uniqueDivisions = Array.from(new Set(allProcessedBlocks.map(b => b.division).filter(Boolean))).sort();
+                uniqueDivisions.forEach(div => {
+                    const opt = document.createElement('option');
+                    opt.value = div;
+                    opt.textContent = div;
+                    divisionSelect.appendChild(opt);
+                });
+                if (uniqueDivisions.includes(currentSelectedDivision)) {
+                    divisionSelect.value = currentSelectedDivision;
+                } else {
+                    divisionSelect.value = 'all';
+                }
+            }
+
+            // 2. Populate District Dropdown based on active division selection
+            const activeDivision = divisionSelect ? divisionSelect.value : 'all';
             const currentSelectedDistrict = districtSelect.value;
             districtSelect.innerHTML = '<option value="all">All Districts</option>';
             
-            const sortedDistricts = Array.from(districtsList).sort();
+            let eligibleBlocksForDistricts = allProcessedBlocks;
+            if (activeDivision !== 'all') {
+                eligibleBlocksForDistricts = allProcessedBlocks.filter(b => b.division === activeDivision);
+            }
+            
+            const sortedDistricts = Array.from(new Set(eligibleBlocksForDistricts.map(b => b.district))).sort();
             sortedDistricts.forEach(d => {
                 const opt = document.createElement('option');
                 opt.value = d;
@@ -430,12 +507,14 @@ function processData() {
             
             if (sortedDistricts.includes(currentSelectedDistrict)) {
                 districtSelect.value = currentSelectedDistrict;
-                // If a district was selected, populate blocks
                 blockSelect.disabled = false;
                 const prevBlockVal = blockSelect.value;
                 blockSelect.innerHTML = '<option value="all">All Blocks</option>';
                 
-                const blocksInSelectedDistrict = parsedBlocks.filter(b => b.district === currentSelectedDistrict);
+                let blocksInSelectedDistrict = parsedBlocks.filter(b => b.district === currentSelectedDistrict);
+                if (activeDivision !== 'all') {
+                    blocksInSelectedDistrict = blocksInSelectedDistrict.filter(b => b.division === activeDivision);
+                }
                 const uniqueBlocks = Array.from(new Set(blocksInSelectedDistrict.map(b => b.block))).sort();
                 uniqueBlocks.forEach(block => {
                     const opt = document.createElement('option');
@@ -444,13 +523,13 @@ function processData() {
                     blockSelect.appendChild(opt);
                 });
                 
-                // Preserve block selection if it is still valid
                 if (uniqueBlocks.includes(prevBlockVal)) {
                     blockSelect.value = prevBlockVal;
                 } else {
                     blockSelect.value = 'all';
                 }
             } else {
+                districtSelect.value = 'all';
                 blockSelect.innerHTML = '<option value="all">All Blocks</option>';
                 blockSelect.value = 'all';
                 blockSelect.disabled = true;
@@ -465,8 +544,9 @@ function processData() {
     }, 50);
 }
 
-// Filter data by search terms, districts, and block selections
+// Filter data by search terms, divisions, districts, and block selections
 function filterAndRender() {
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
     const selectedDistrict = districtSelect.value;
     const selectedBlock = blockSelect.value;
     const searchVal = searchInput.value.toLowerCase().trim();
@@ -474,12 +554,17 @@ function filterAndRender() {
     
     // Check if we are in Block drill-down (both a specific district AND block are selected)
     if (selectedDistrict !== 'all' && selectedBlock !== 'all') {
-        const matchingBlock = parsedBlocks.find(b => b.district === selectedDistrict && b.block === selectedBlock);
+        const matchingBlock = parsedBlocks.find(b => 
+            (selectedDivision === 'all' || b.division === selectedDivision) &&
+            b.district === selectedDistrict && 
+            b.block === selectedBlock
+        );
         
         if (matchingBlock) {
             // Drill down: Map Grampanchayats of this block to row items
             let gpRows = matchingBlock.gpList.map(gp => ({
                 isGpRow: true,
+                division: matchingBlock.division,
                 district: matchingBlock.district,
                 block: matchingBlock.block,
                 name: gp.name,
@@ -518,17 +603,19 @@ function filterAndRender() {
     } else {
         // Default Block View: Filter the blocks
         filteredBlocks = parsedBlocks.filter(block => {
+            const divisionMatch = selectedDivision === 'all' || block.division === selectedDivision;
             const districtMatch = selectedDistrict === 'all' || block.district === selectedDistrict;
             
             let searchMatch = true;
             if (searchVal) {
                 const blockNameMatch = block.block.toLowerCase().includes(searchVal);
                 const districtNameMatch = block.district.toLowerCase().includes(searchVal);
+                const divisionNameMatch = block.division && block.division.toLowerCase().includes(searchVal);
                 const gpMatch = block.gpList.some(gp => gp.name.toLowerCase().includes(searchVal));
-                searchMatch = blockNameMatch || districtNameMatch || gpMatch;
+                searchMatch = blockNameMatch || districtNameMatch || divisionNameMatch || gpMatch;
             }
             
-            return districtMatch && searchMatch;
+            return divisionMatch && districtMatch && searchMatch;
         });
     }
 
@@ -782,11 +869,17 @@ function renderTable() {
 
 // Update KPI Stats Cards based on parsed data and slider selections
 function updateKPICards() {
-    const districtsProcessed = new Set(parsedBlocks.map(b => b.district)).size;
-    const eligibleBlocks = new Set(parsedBlocks.filter(b => b.eligible).map(b => b.block)).size;
-    const awardedBlocks = parsedBlocks.filter(b => b.status === 'Awarded').length;
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
+    let scopeBlocks = parsedBlocks;
+    if (selectedDivision !== 'all') {
+        scopeBlocks = parsedBlocks.filter(b => b.division === selectedDivision);
+    }
+
+    const districtsProcessed = new Set(scopeBlocks.map(b => b.district)).size;
+    const eligibleBlocks = new Set(scopeBlocks.filter(b => b.eligible).map(b => b.block)).size;
+    const awardedBlocks = scopeBlocks.filter(b => b.status === 'Awarded').length;
     
-    const awardedList = parsedBlocks.filter(b => b.status === 'Awarded');
+    const awardedList = scopeBlocks.filter(b => b.status === 'Awarded');
     const avgScore = awardedList.length > 0 
         ? (awardedList.reduce((acc, b) => acc + b.score, 0) / awardedList.length).toFixed(2)
         : '0.00';
@@ -910,11 +1003,13 @@ function exportCSV() {
     let csvRows = [];
 
     if (isGpView) {
-        headers = ['Rank', 'Block', 'Grampanchayat Name', 'Performance Score (%)', 'Total Marks', 'Total Out of', 'Status'];
+        headers = ['Rank', 'Division', 'District', 'Block', 'Grampanchayat Name', 'Performance Score (%)', 'Total Marks', 'Total Out of', 'Status'];
         csvRows.push(headers.join(','));
         filteredBlocks.forEach(gp => {
             const row = [
                 gp.rank || '-',
+                `"${(gp.division || '').replace(/"/g, '""')}"`,
+                `"${(gp.district || '').replace(/"/g, '""')}"`,
                 `"${gp.block.replace(/"/g, '""')}"`,
                 `"${gp.name.replace(/"/g, '""')}"`,
                 gp.score.toFixed(2),
@@ -925,11 +1020,12 @@ function exportCSV() {
             csvRows.push(row.join(','));
         });
     } else {
-        headers = ['Rank', 'District', 'Block Name', 'Performance Score (%)', 'Grampanchayats Count', 'Status'];
+        headers = ['Rank', 'Division', 'District', 'Block Name', 'Performance Score (%)', 'Grampanchayats Count', 'Status'];
         csvRows.push(headers.join(','));
         filteredBlocks.forEach(b => {
             const row = [
                 b.rank || '-',
+                `"${(b.division || '').replace(/"/g, '""')}"`,
                 `"${b.district.replace(/"/g, '""')}"`,
                 `"${b.block.replace(/"/g, '""')}"`,
                 b.score.toFixed(2),
@@ -1006,12 +1102,24 @@ function renderDistrictLeaders() {
     const sortedDistricts = Object.keys(districtGroups).sort();
 
     // Check filters
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
     const selectedDistrict = districtSelect.value;
     const searchVal = districtLeadersSearchText.toLowerCase().trim();
 
     let renderedCardsCount = 0;
 
     sortedDistricts.forEach(districtName => {
+        const blocks = districtGroups[districtName];
+        if (!blocks || blocks.length === 0) return;
+
+        // Filter by division
+        if (selectedDivision !== 'all') {
+            const districtDivision = blocks[0].division;
+            if (districtDivision && districtDivision !== selectedDivision) {
+                return;
+            }
+        }
+
         // Filter by district dropdown
         if (selectedDistrict !== 'all' && districtName !== selectedDistrict) {
             return;
@@ -1021,8 +1129,6 @@ function renderDistrictLeaders() {
         if (searchVal && !districtName.toLowerCase().includes(searchVal)) {
             return;
         }
-
-        const blocks = districtGroups[districtName];
         
         // Sort blocks by score desc, then by block name asc
         blocks.sort((a, b) => {
