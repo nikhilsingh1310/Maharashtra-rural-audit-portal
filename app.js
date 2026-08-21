@@ -33,6 +33,9 @@ const tableDivisionSelect = document.getElementById('table-division-select'); //
 const districtSelect = document.getElementById('district-select');
 const blockSelect = document.getElementById('block-select'); // Block dropdown
 const districtPillsContainer = document.getElementById('district-pills-container'); // District quick-pills bar
+const breadcrumbTrail = document.getElementById('breadcrumb-trail'); // Drilldown breadcrumbs
+const breadcrumbBackBtn = document.getElementById('breadcrumb-back-btn'); // Drilldown back button
+const currentLevelBadge = document.getElementById('current-level-badge'); // Current level indicator
 const searchInput = document.getElementById('search-input');
 const exportCsvBtn = document.getElementById('export-csv');
 const resetParamsBtn = document.getElementById('reset-params');
@@ -239,6 +242,27 @@ function initEventListeners() {
         });
     }
     
+    // Breadcrumb Back Button listener
+    if (breadcrumbBackBtn) {
+        breadcrumbBackBtn.addEventListener('click', () => {
+            const selectedDistrict = districtSelect.value;
+            const selectedBlock = blockSelect.value;
+            
+            if (selectedDistrict !== 'all' && selectedBlock !== 'all') {
+                // Level 4 -> Level 3: Back to District Blocks
+                blockSelect.value = 'all';
+                blockSelect.dispatchEvent(new Event('change'));
+            } else if (selectedDistrict !== 'all') {
+                // Level 3 -> Level 2: Back to Division Districts
+                districtSelect.value = 'all';
+                districtSelect.dispatchEvent(new Event('change'));
+            } else if (divisionSelect && divisionSelect.value !== 'all') {
+                // Level 2 -> Level 1: Back to All Divisions
+                handleDivisionChange('all');
+            }
+        });
+    }
+
     // Buttons
     resetParamsBtn.addEventListener('click', resetParameters);
     exportCsvBtn.addEventListener('click', exportCSV);
@@ -566,6 +590,116 @@ function processData() {
     }, 50);
 }
 
+// Breadcrumb updater for multi-level navigation
+function updateBreadcrumbs() {
+    if (!breadcrumbTrail) return;
+    
+    breadcrumbTrail.innerHTML = '';
+    const isMr = window.i18n && window.i18n.getCurrent() === 'mr';
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
+    const selectedDistrict = districtSelect.value;
+    const selectedBlock = blockSelect.value;
+    const searchVal = searchInput.value.trim();
+
+    // 1. Root / State Crumb
+    const stateCrumb = document.createElement('span');
+    stateCrumb.className = `breadcrumb-item ${selectedDivision === 'all' && !searchVal ? 'active' : ''}`;
+    stateCrumb.innerHTML = `<i data-lucide="home" style="width: 13px; height: 13px;"></i> ${isMr ? 'महाराष्ट्र राज्य' : 'Maharashtra State'}`;
+    stateCrumb.addEventListener('click', () => {
+        if (selectedDivision !== 'all' || selectedDistrict !== 'all' || selectedBlock !== 'all') {
+            searchInput.value = '';
+            handleDivisionChange('all');
+        }
+    });
+    breadcrumbTrail.appendChild(stateCrumb);
+
+    // If search is active
+    if (searchVal) {
+        const sep = document.createElement('span');
+        sep.className = 'breadcrumb-separator';
+        sep.innerHTML = '<i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>';
+        breadcrumbTrail.appendChild(sep);
+
+        const searchCrumb = document.createElement('span');
+        searchCrumb.className = 'breadcrumb-item active';
+        searchCrumb.innerHTML = `<i data-lucide="search" style="width: 13px; height: 13px;"></i> "${searchVal}"`;
+        breadcrumbTrail.appendChild(searchCrumb);
+
+        if (breadcrumbBackBtn) breadcrumbBackBtn.style.display = 'inline-flex';
+        if (currentLevelBadge) currentLevelBadge.innerText = isMr ? 'शोध निकाल' : 'SEARCH';
+        lucide.createIcons();
+        return;
+    }
+
+    // 2. Division Crumb (if selected)
+    if (selectedDivision !== 'all') {
+        const sep1 = document.createElement('span');
+        sep1.className = 'breadcrumb-separator';
+        sep1.innerHTML = '<i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>';
+        breadcrumbTrail.appendChild(sep1);
+
+        const divCrumb = document.createElement('span');
+        divCrumb.className = `breadcrumb-item ${selectedDistrict === 'all' ? 'active' : ''}`;
+        divCrumb.innerHTML = `<i data-lucide="map-pin" style="width: 13px; height: 13px;"></i> ${selectedDivision} ${isMr ? 'विभाग' : 'Division'}`;
+        divCrumb.addEventListener('click', () => {
+            if (selectedDistrict !== 'all' || selectedBlock !== 'all') {
+                districtSelect.value = 'all';
+                districtSelect.dispatchEvent(new Event('change'));
+            }
+        });
+        breadcrumbTrail.appendChild(divCrumb);
+    }
+
+    // 3. District Crumb (if selected)
+    if (selectedDistrict !== 'all') {
+        const sep2 = document.createElement('span');
+        sep2.className = 'breadcrumb-separator';
+        sep2.innerHTML = '<i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>';
+        breadcrumbTrail.appendChild(sep2);
+
+        const distCrumb = document.createElement('span');
+        distCrumb.className = `breadcrumb-item ${selectedBlock === 'all' ? 'active' : ''}`;
+        distCrumb.innerHTML = `<i data-lucide="landmark" style="width: 13px; height: 13px;"></i> ${selectedDistrict} ${isMr ? 'जिल्हा' : 'District'}`;
+        distCrumb.addEventListener('click', () => {
+            if (selectedBlock !== 'all') {
+                blockSelect.value = 'all';
+                blockSelect.dispatchEvent(new Event('change'));
+            }
+        });
+        breadcrumbTrail.appendChild(distCrumb);
+    }
+
+    // 4. Block Crumb (if selected)
+    if (selectedDistrict !== 'all' && selectedBlock !== 'all') {
+        const sep3 = document.createElement('span');
+        sep3.className = 'breadcrumb-separator';
+        sep3.innerHTML = '<i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>';
+        breadcrumbTrail.appendChild(sep3);
+
+        const blkCrumb = document.createElement('span');
+        blkCrumb.className = 'breadcrumb-item active';
+        blkCrumb.innerHTML = `<i data-lucide="layers" style="width: 13px; height: 13px;"></i> ${selectedBlock} ${isMr ? 'तालुका' : 'Block'}`;
+        breadcrumbTrail.appendChild(blkCrumb);
+    }
+
+    // Update Back Button & Level Badge
+    if (selectedDistrict !== 'all' && selectedBlock !== 'all') {
+        if (breadcrumbBackBtn) breadcrumbBackBtn.style.display = 'inline-flex';
+        if (currentLevelBadge) currentLevelBadge.innerText = isMr ? 'ग्रामपंचायती' : 'GRAMPANCHAYATS';
+    } else if (selectedDistrict !== 'all') {
+        if (breadcrumbBackBtn) breadcrumbBackBtn.style.display = 'inline-flex';
+        if (currentLevelBadge) currentLevelBadge.innerText = isMr ? 'तालुके / ब्लॉक्स' : 'BLOCKS';
+    } else if (selectedDivision !== 'all') {
+        if (breadcrumbBackBtn) breadcrumbBackBtn.style.display = 'inline-flex';
+        if (currentLevelBadge) currentLevelBadge.innerText = isMr ? 'जिल्हे' : 'DISTRICTS';
+    } else {
+        if (breadcrumbBackBtn) breadcrumbBackBtn.style.display = 'none';
+        if (currentLevelBadge) currentLevelBadge.innerText = isMr ? 'महसूल विभाग' : 'DIVISIONS';
+    }
+
+    lucide.createIcons();
+}
+
 // Filter data by search terms, divisions, districts, and block selections
 function filterAndRender() {
     const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
@@ -583,7 +717,6 @@ function filterAndRender() {
         );
         
         if (matchingBlock) {
-            // Drill down: Map Grampanchayats of this block to row items
             let gpRows = matchingBlock.gpList.map(gp => ({
                 isGpRow: true,
                 division: matchingBlock.division,
@@ -599,12 +732,10 @@ function filterAndRender() {
                 status: 'Excluded'
             }));
 
-            // Search filter within GPs list
             if (searchVal) {
                 gpRows = gpRows.filter(gp => gp.name.toLowerCase().includes(searchVal));
             }
 
-            // Rank Grampanchayats of this specific block based on maxAwards parameter
             const maxAwards = parseInt(maxAwardsSlider.value) || 5;
             const eligibleGPs = gpRows.filter(gp => gp.eligible);
             eligibleGPs.sort((a, b) => b.score - a.score);
@@ -623,7 +754,7 @@ function filterAndRender() {
             filteredBlocks = [];
         }
     } else {
-        // Default Block View: Filter the blocks
+        // Filter the blocks for active division / district / search query
         filteredBlocks = parsedBlocks.filter(block => {
             const divisionMatch = selectedDivision === 'all' || block.division === selectedDivision;
             const districtMatch = selectedDistrict === 'all' || block.district === selectedDistrict;
@@ -658,23 +789,18 @@ function sortAndRender() {
             const rB = b.rank === null ? 999999 : b.rank;
             return (rA - rB) * dir;
         } else if (col === 'district') {
-            // Sort by district (or block name if in GP view)
             const distCompare = a.district.localeCompare(b.district);
             if (distCompare !== 0) return distCompare * dir;
-            
-            // Secondary sort: Rank ascending (Rank 1 first) within same district
             const rA = a.rank === null ? 999999 : a.rank;
             const rB = b.rank === null ? 999999 : b.rank;
             return rA - rB;
         } else if (col === 'block') {
-            // Sort by block name (or GP name if in GP view)
             const valA = a.isGpRow ? a.name : a.block;
             const valB = b.isGpRow ? b.name : b.block;
             return valA.localeCompare(valB) * dir;
         } else if (col === 'score') {
             return (a.score - b.score) * dir;
         } else if (col === 'gps') {
-            // Sort by GPs count (or TotalMarks if in GP view)
             const valA = a.isGpRow ? a.totalMarks : a.gpCount;
             const valB = b.isGpRow ? b.totalMarks : b.gpCount;
             return (valA - valB) * dir;
@@ -685,65 +811,269 @@ function sortAndRender() {
     renderTable();
 }
 
-// Draw HTML Table Rows
+// Render HTML Table Rows (Hierarchical 4-Level Engine)
 function renderTable() {
-    const uniqueCount = new Set(filteredBlocks.map(b => b.isGpRow ? b.name : b.block)).size;
-    tableShowingCount.innerText = uniqueCount;
-    
-    const maxAwards = parseInt(maxAwardsSlider.value) || 5;
-    
-    // Dynamically update the header
-    const tableHeader = document.querySelector('#rankings-table thead');
+    const isMr = window.i18n && window.i18n.getCurrent() === 'mr';
+    const selectedDivision = divisionSelect ? divisionSelect.value : 'all';
     const selectedDistrict = districtSelect.value;
     const selectedBlock = blockSelect.value;
-    const isGpView = selectedDistrict !== 'all' && selectedBlock !== 'all';
+    const searchVal = searchInput.value.toLowerCase().trim();
     const threshold = parseFloat(thresholdSlider.value);
     
-    if (isGpView) {
-        tableHeader.innerHTML = `
-            <tr>
-                <th style="width: 60px;">Rank</th>
-                <th>Block Name</th>
-                <th class="sortable" data-sort="block">Grampanchayat Name <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="sortable text-center" data-sort="score">Score (%) <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="sortable text-center" data-sort="gps">Marks (Obtained / Out of) <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="text-center">Status</th>
-                <th style="width: 50px;"></th>
-            </tr>
-        `;
-    } else {
-        tableHeader.innerHTML = `
-            <tr>
-                <th style="width: 60px;">Rank</th>
-                <th class="sortable" data-sort="district">District <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="sortable" data-sort="block">Block Name <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="sortable text-center" data-sort="score">Score (%) <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="sortable text-center" data-sort="gps">Grampanchayats <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
-                <th class="text-center">Status</th>
-                <th style="width: 50px;"></th>
-            </tr>
-        `;
+    const tableHeader = document.querySelector('#rankings-table thead');
+    tableBody.innerHTML = '';
+    
+    updateBreadcrumbs();
+    
+    if (!parsedBlocks || parsedBlocks.length === 0) {
+        tableHeader.innerHTML = `<tr><th style="width: 60px;">#</th><th>Data</th></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted">No data loaded</td></tr>`;
+        showLoading(false);
+        return;
     }
 
-    tableBody.innerHTML = '';
+    // LEVEL 4 / SEARCH: If search is typed OR a specific block is selected
+    if (searchVal || (selectedDistrict !== 'all' && selectedBlock !== 'all')) {
+        const isGpView = filteredBlocks.length > 0 && filteredBlocks[0].isGpRow;
+        tableShowingCount.innerText = filteredBlocks.length;
+        
+        if (isGpView) {
+            tableHeader.innerHTML = `
+                <tr>
+                    <th style="width: 60px;">Rank</th>
+                    <th>${isMr ? 'तालुका' : 'Block Name'}</th>
+                    <th class="sortable" data-sort="block">${isMr ? 'ग्रामपंचायत नाव' : 'Grampanchayat Name'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="sortable text-center" data-sort="score">${isMr ? 'गुण (%)' : 'Score (%)'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="sortable text-center" data-sort="gps">${isMr ? 'गुण (प्राप्त / एकूण)' : 'Marks (Obtained / Out of)'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="text-center">${isMr ? 'स्थिती' : 'Status'}</th>
+                </tr>
+            `;
+        } else {
+            tableHeader.innerHTML = `
+                <tr>
+                    <th style="width: 60px;">Rank</th>
+                    <th class="sortable" data-sort="district">${isMr ? 'जिल्हा' : 'District'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="sortable" data-sort="block">${isMr ? 'तालुका नाव' : 'Block Name'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="sortable text-center" data-sort="score">${isMr ? 'गुण (%)' : 'Score (%)'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="sortable text-center" data-sort="gps">${isMr ? 'ग्रामपंचायती' : 'Grampanchayats'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                    <th class="text-center">${isMr ? 'स्थिती' : 'Status'}</th>
+                    <th style="width: 50px;"></th>
+                </tr>
+            `;
+        }
+        
+        if (filteredBlocks.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i data-lucide="info" style="width: 24px; height: 24px; margin-bottom: 8px;"></i>
+                        <p>${isMr ? 'सक्रिय फिल्टरशी जुळणाऱ्या कोणत्याही नोंदी आढळल्या नाहीत.' : 'No records found matching the active filters.'}</p>
+                    </td>
+                </tr>
+            `;
+            lucide.createIcons();
+            showLoading(false);
+            return;
+        }
 
-    if (filteredBlocks.length === 0) {
-        tableBody.innerHTML = `
+        renderBlockOrGpRows(filteredBlocks, isGpView);
+        return;
+    }
+
+    // LEVEL 3: District Selected -> Show Ranked Blocks of that District
+    if (selectedDistrict !== 'all') {
+        const districtBlocks = parsedBlocks.filter(b => 
+            (selectedDivision === 'all' || b.division === selectedDivision) && 
+            b.district === selectedDistrict
+        );
+        tableShowingCount.innerText = districtBlocks.length;
+
+        tableHeader.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center py-5 text-muted">
-                    <i data-lucide="info" style="width: 24px; height: 24px; margin-bottom: 8px;"></i>
-                    <p>No records found matching the active filters.</p>
-                </td>
+                <th style="width: 60px;">Rank</th>
+                <th class="sortable" data-sort="district">${isMr ? 'जिल्हा' : 'District'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                <th class="sortable" data-sort="block">${isMr ? 'तालुका नाव' : 'Block Name'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                <th class="sortable text-center" data-sort="score">${isMr ? 'गुण (%)' : 'Score (%)'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                <th class="sortable text-center" data-sort="gps">${isMr ? 'ग्रामपंचायती' : 'Grampanchayats'} <i data-lucide="chevrons-up-down" class="sort-icon"></i></th>
+                <th class="text-center">${isMr ? 'स्थिती' : 'Status'}</th>
+                <th style="width: 60px; text-align: center;"></th>
             </tr>
         `;
+
+        renderBlockOrGpRows(districtBlocks, false);
+        return;
+    }
+
+    // LEVEL 2: Division Selected -> Show Districts of that Division
+    if (selectedDivision !== 'all') {
+        const divisionBlocks = parsedBlocks.filter(b => b.division === selectedDivision);
+        
+        const districtMap = {};
+        divisionBlocks.forEach(b => {
+            if (!districtMap[b.district]) districtMap[b.district] = [];
+            districtMap[b.district].push(b);
+        });
+
+        const districtSummaries = Object.keys(districtMap).map(distName => {
+            const blks = districtMap[distName];
+            const totalCount = blks.length;
+            const eligibleCount = blks.filter(b => b.eligible).length;
+            const awardedCount = blks.filter(b => b.status === 'Awarded').length;
+            const avgScore = blks.reduce((acc, b) => acc + b.score, 0) / totalCount;
+            
+            blks.sort((a, b) => b.score - a.score);
+            const topBlock = blks[0];
+
+            return {
+                division: selectedDivision,
+                district: distName,
+                totalBlocks: totalCount,
+                eligibleBlocks: eligibleCount,
+                awardedBlocks: awardedCount,
+                avgScore: Math.round(avgScore * 100) / 100,
+                topBlockName: topBlock ? topBlock.block : '-',
+                topBlockScore: topBlock ? topBlock.score : 0
+            };
+        });
+
+        districtSummaries.sort((a, b) => b.topBlockScore - a.topBlockScore);
+        tableShowingCount.innerText = districtSummaries.length;
+
+        tableHeader.innerHTML = `
+            <tr>
+                <th style="width: 60px;">Rank</th>
+                <th>${isMr ? 'विभाग' : 'Division'}</th>
+                <th>${isMr ? 'जिल्हा नाव' : 'District Name'}</th>
+                <th class="text-center">${isMr ? 'एकूण तालुके' : 'Total Blocks'}</th>
+                <th class="text-center">${isMr ? 'पात्र तालुके' : 'Eligible'}</th>
+                <th class="text-center">${isMr ? 'पुरस्कृत तालुके' : 'Awarded'}</th>
+                <th class="text-center">${isMr ? 'अव्वल तालुका (गुण)' : 'Top Block (Score)'}</th>
+                <th style="width: 140px; text-align: center;">${isMr ? 'कृती' : 'Action'}</th>
+            </tr>
+        `;
+
+        districtSummaries.forEach((dist, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = 'table-row clickable';
+            
+            const rankBadge = `<span class="rank-badge ${idx < 3 ? 'top-rank' : 'other-rank'}">${idx + 1}</span>`;
+            
+            tr.innerHTML = `
+                <td>${rankBadge}</td>
+                <td style="font-weight: 500; color: var(--text-secondary);"><i data-lucide="map-pin" style="width: 13px; height: 13px; color: var(--primary); display: inline-block; vertical-align: middle; margin-right: 4px;"></i>${dist.division}</td>
+                <td style="font-weight: 700; color: var(--text-primary); font-size: 14px;">${dist.district}</td>
+                <td class="text-center" style="font-weight: 600;">${dist.totalBlocks}</td>
+                <td class="text-center"><span class="badge badge-success">${dist.eligibleBlocks}</span></td>
+                <td class="text-center"><span class="badge badge-gold"><i data-lucide="award"></i> ${dist.awardedBlocks}</span></td>
+                <td class="text-center" style="font-weight: 600; color: var(--primary);">${dist.topBlockName} (${dist.topBlockScore.toFixed(2)}%)</td>
+                <td class="text-center">
+                    <button class="drilldown-btn" title="View Blocks">
+                        <span>${isMr ? 'तालुके पहा' : 'View Blocks'}</span> <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
+                    </button>
+                </td>
+            `;
+
+            tr.addEventListener('click', () => {
+                districtSelect.value = dist.district;
+                districtSelect.dispatchEvent(new Event('change'));
+            });
+
+            tableBody.appendChild(tr);
+        });
+
         lucide.createIcons();
         showLoading(false);
         return;
     }
 
-    filteredBlocks.forEach((item, index) => {
-        if (item.isGpRow) {
-            // Render Grampanchayat Row (leaves)
+    // LEVEL 1: All Divisions -> Show 6 Divisions of Maharashtra
+    const divisionMap = {};
+    parsedBlocks.forEach(b => {
+        const divName = b.division || 'Other';
+        if (!divisionMap[divName]) divisionMap[divName] = [];
+        divisionMap[divName].push(b);
+    });
+
+    const divisionSummaries = Object.keys(divisionMap).map(divName => {
+        const blks = divisionMap[divName];
+        const distCount = new Set(blks.map(b => b.district)).size;
+        const totalCount = blks.length;
+        const eligibleCount = blks.filter(b => b.eligible).length;
+        const awardedCount = blks.filter(b => b.status === 'Awarded').length;
+        const avgScore = blks.reduce((acc, b) => acc + b.score, 0) / totalCount;
+
+        return {
+            division: divName,
+            districtsCount: distCount,
+            totalBlocks: totalCount,
+            eligibleBlocks: eligibleCount,
+            awardedBlocks: awardedCount,
+            avgScore: Math.round(avgScore * 100) / 100
+        };
+    });
+
+    divisionSummaries.sort((a, b) => b.avgScore - a.avgScore);
+    tableShowingCount.innerText = divisionSummaries.length;
+
+    tableHeader.innerHTML = `
+        <tr>
+            <th style="width: 60px;">Rank</th>
+            <th>${isMr ? 'महसूल विभाग' : 'Revenue Division'}</th>
+            <th class="text-center">${isMr ? 'एकूण जिल्हे' : 'Districts'}</th>
+            <th class="text-center">${isMr ? 'एकूण तालुके' : 'Total Blocks'}</th>
+            <th class="text-center">${isMr ? 'पात्र तालुके' : 'Eligible'}</th>
+            <th class="text-center">${isMr ? 'पुरस्कृत तालुके' : 'Awarded'}</th>
+            <th class="text-center">${isMr ? 'सरासरी गुण (%)' : 'Avg Score (%)'}</th>
+            <th style="width: 150px; text-align: center;">${isMr ? 'कृती' : 'Action'}</th>
+        </tr>
+    `;
+
+    divisionSummaries.forEach((div, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'table-row clickable';
+        
+        const rankBadge = `<span class="rank-badge ${idx < 3 ? 'top-rank' : 'other-rank'}">${idx + 1}</span>`;
+        
+        tr.innerHTML = `
+            <td>${rankBadge}</td>
+            <td style="font-weight: 700; color: var(--text-primary); font-size: 14px;">
+                <i data-lucide="map" style="width: 15px; height: 15px; color: var(--primary); display: inline-block; vertical-align: middle; margin-right: 6px;"></i>
+                ${div.division} ${isMr ? 'विभाग' : 'Division'}
+            </td>
+            <td class="text-center" style="font-weight: 600;"><span class="badge badge-muted">${div.districtsCount} Districts</span></td>
+            <td class="text-center" style="font-weight: 600;">${div.totalBlocks}</td>
+            <td class="text-center"><span class="badge badge-success">${div.eligibleBlocks}</span></td>
+            <td class="text-center"><span class="badge badge-gold"><i data-lucide="award"></i> ${div.awardedBlocks}</span></td>
+            <td class="text-center font-semibold" style="color: ${div.avgScore >= threshold ? 'var(--success)' : 'var(--danger)'}; font-weight:700;">
+                ${div.avgScore.toFixed(2)}%
+            </td>
+            <td class="text-center">
+                <button class="drilldown-btn" title="View Districts">
+                    <span>${isMr ? 'जिल्हे पहा' : 'View Districts'}</span> <i data-lucide="arrow-right" style="width: 13px; height: 13px;"></i>
+                </button>
+            </td>
+        `;
+
+        tr.addEventListener('click', () => {
+            handleDivisionChange(div.division);
+        });
+
+        tableBody.appendChild(tr);
+    });
+
+    lucide.createIcons();
+    showLoading(false);
+}
+
+// Render Block or GP Rows with accordion
+function renderBlockOrGpRows(blocksList, isGpView) {
+    const isMr = window.i18n && window.i18n.getCurrent() === 'mr';
+    const threshold = parseFloat(thresholdSlider.value);
+    const maxAwards = parseInt(maxAwardsSlider.value) || 5;
+
+    blocksList.forEach((item, index) => {
+        if (isGpView || item.isGpRow) {
+            // Render GP Row
             const trRow = document.createElement('tr');
             trRow.className = `table-row ${item.status === 'Awarded' ? 'awarded' : ''}`;
             trRow.id = `row-${index}`;
@@ -754,11 +1084,11 @@ function renderTable() {
 
             let statusBadge = '';
             if (item.status === 'Awarded') {
-                statusBadge = `<span class="badge badge-gold"><i data-lucide="award"></i> Top ${maxAwards}</span>`;
+                statusBadge = `<span class="badge badge-gold"><i data-lucide="award"></i> ${isMr ? 'पुरस्कृत' : 'Awarded'}</span>`;
             } else if (item.status === 'Eligible') {
-                statusBadge = `<span class="badge badge-success"><i data-lucide="check-circle-2"></i> Eligible</span>`;
+                statusBadge = `<span class="badge badge-success"><i data-lucide="check-circle-2"></i> ${isMr ? 'पात्र' : 'Eligible'}</span>`;
             } else {
-                statusBadge = `<span class="badge badge-muted"><i data-lucide="x-circle"></i> Excluded</span>`;
+                statusBadge = `<span class="badge badge-muted"><i data-lucide="x-circle"></i> ${isMr ? 'वगळलेले' : 'Excluded'}</span>`;
             }
 
             trRow.innerHTML = `
@@ -770,11 +1100,10 @@ function renderTable() {
                 </td>
                 <td class="text-center text-secondary">${item.totalMarks.toFixed(2)} / ${item.totalOutOf.toFixed(1)}</td>
                 <td class="text-center">${statusBadge}</td>
-                <td class="text-center"></td>
             `;
             tableBody.appendChild(trRow);
         } else {
-            // Render standard Block Row
+            // Render Block Row
             const trRow = document.createElement('tr');
             trRow.className = `table-row ${item.status === 'Awarded' ? 'awarded' : ''}`;
             trRow.id = `row-${index}`;
@@ -785,11 +1114,11 @@ function renderTable() {
 
             let statusBadge = '';
             if (item.status === 'Awarded') {
-                statusBadge = `<span class="badge badge-gold"><i data-lucide="award"></i> Awarded</span>`;
+                statusBadge = `<span class="badge badge-gold"><i data-lucide="award"></i> ${isMr ? 'पुरस्कृत' : 'Awarded'}</span>`;
             } else if (item.status === 'Eligible') {
-                statusBadge = `<span class="badge badge-success"><i data-lucide="check-circle-2"></i> Eligible</span>`;
+                statusBadge = `<span class="badge badge-success"><i data-lucide="check-circle-2"></i> ${isMr ? 'पात्र' : 'Eligible'}</span>`;
             } else {
-                statusBadge = `<span class="badge badge-muted"><i data-lucide="x-circle"></i> Excluded</span>`;
+                statusBadge = `<span class="badge badge-muted"><i data-lucide="x-circle"></i> ${isMr ? 'वगळलेले' : 'Excluded'}</span>`;
             }
 
             trRow.innerHTML = `
@@ -838,10 +1167,10 @@ function renderTable() {
                     <div class="details-accordion" id="accordion-${index}">
                         <div class="details-content">
                             <div class="gp-grid-header">
-                                <div>Grampanchayat Name</div>
-                                <div>Total Marks</div>
-                                <div>Out Of Marks</div>
-                                <div>Score (Percentage)</div>
+                                <div>${isMr ? 'ग्रामपंचायत नाव' : 'Grampanchayat Name'}</div>
+                                <div>${isMr ? 'प्राप्त गुण' : 'Total Marks'}</div>
+                                <div>${isMr ? 'एकूण गुण' : 'Out Of Marks'}</div>
+                                <div>${isMr ? 'गुण (टक्केवारी)' : 'Score (Percentage)'}</div>
                             </div>
                             ${gpRowsHtml}
                         </div>
@@ -849,7 +1178,6 @@ function renderTable() {
                 </td>
             `;
 
-            // Toggle Accordion Click Event
             const toggleAccordion = () => {
                 const accordion = trDetails.querySelector(`.details-accordion`);
                 const isOpen = trRow.classList.contains('open');

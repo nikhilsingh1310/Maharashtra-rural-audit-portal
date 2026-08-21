@@ -413,6 +413,20 @@
                             </div>
                         </div>
 
+                        <!-- Breadcrumb & Drill-Down Navigation Toolbar -->
+                        <div id="hierarchy-breadcrumb-wrapper" class="hierarchy-breadcrumb-wrapper">
+                            <div class="breadcrumb-trail" id="breadcrumb-trail">
+                                <!-- Populated dynamically by app.js -->
+                            </div>
+                            <div class="breadcrumb-actions" style="display: flex; align-items: center; gap: 8px;">
+                                <button id="breadcrumb-back-btn" class="btn btn-secondary" style="display: none; padding: 4px 10px; font-size: 12px; height: 28px;">
+                                    <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i>
+                                    <span data-i18n="btn_back">मागे</span>
+                                </button>
+                                <span id="current-level-badge" class="level-indicator-badge">Divisions</span>
+                            </div>
+                        </div>
+
                         <!-- Interactive District Quick-Pills Row -->
                         <div id="district-pills-container" class="district-pills-container">
                             <!-- Populated dynamically by app.js -->
